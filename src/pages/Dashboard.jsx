@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -29,7 +29,9 @@ const Dashboard = () => {
         </div>
         <div className="navbar-user">
           <span className="user-role">{getRoleDisplay(user?.role)}</span>
-          <span className="user-name">{user?.full_name}</span>
+          <Link to="/profile" className="user-name" title="Xem hồ sơ">
+            {user?.full_name}
+          </Link>
           <button onClick={handleLogout} className="logout-btn">
             Đăng Xuất
           </button>
