@@ -6,6 +6,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import RegisterTenant from './pages/RegisterTenant';
 import RegisterLandlord from './pages/RegisterLandlord';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 // Common Pages
 import Dashboard from './pages/Dashboard';
@@ -30,6 +32,10 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
+          {/* Password reset flows */}
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register/tenant" element={<RegisterTenant />} />

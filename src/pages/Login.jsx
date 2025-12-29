@@ -114,6 +114,9 @@ const Login = () => {
           <p>
             <a href="/forgot-password">Quên mật khẩu?</a>
           </p>
+          <p>
+            Đã có mã đặt lại? <a href="/reset-password">Đặt lại bằng mã</a>
+          </p>
         </div>
       </div>
     </div>
