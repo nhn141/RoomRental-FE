@@ -6,12 +6,17 @@ import '../Profile.css';
 
 const ProfileView = () => {
   const { profile, loading, error, fetchProfile } = useProfile();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   if (loading) {
     return <div className="profile-container"><p>Đang tải...</p></div>;
@@ -27,6 +32,15 @@ const ProfileView = () => {
 
   return (
     <div className="profile-container">
+      <div className="profile-header">
+        <button 
+          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
+          className="home-btn"
+          title="Về Dashboard"
+        >
+          🏠
+        </button>
+      </div>
       <div className="profile-card">
         <h2>Thông Tin Cá Nhân</h2>
         <div className="profile-content">
@@ -153,13 +167,13 @@ const ProfileView = () => {
         </div>
         <div className="profile-actions">
           <a href="/profile/edit" className="edit-btn">
-            Chỉnh Sửa Profile
+            ✏️ Chỉnh sửa hồ sơ
           </a>
           <button 
-            onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-            className="back-btn"
+            onClick={handleLogout}
+            className="logout-btn"
           >
-            Quay Lại Dashboard
+            🚪 Đăng Xuất
           </button>
         </div>
       </div>

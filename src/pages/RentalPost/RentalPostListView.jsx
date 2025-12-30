@@ -25,6 +25,15 @@ const RentalPostListView = () => {
 
   return (
     <div className="rental-container">
+      <div className="page-header">
+        <button 
+          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
+          className="home-btn"
+          title="Về Dashboard"
+        >
+          🏠
+        </button>
+      </div>
       <div className="posts-header">
         <h1>Danh Sách Bài Đăng Cho Thuê</h1>
         <div className="posts-header-nav">

@@ -136,6 +136,15 @@ const EditProfileView = () => {
 
   return (
     <div className="profile-container">
+      <div className="profile-header">
+        <button 
+          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
+          className="home-btn"
+          title="Về Dashboard"
+        >
+          🏠
+        </button>
+      </div>
       <div className="edit-profile-card">
         <h2>Chỉnh Sửa Profile</h2>
 

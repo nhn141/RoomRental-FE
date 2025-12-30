@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdmin } from '../../hooks/useAdmin';
+import { useAuth } from '../../context/AuthContext';
 import './Admin.css';
 
 const CreateAdminView = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { createAdmin, loading, error } = useAdmin();
   const [formData, setFormData] = useState({
     email: '',
@@ -63,6 +65,15 @@ const CreateAdminView = () => {
 
   return (
     <div className="admin-container">
+      <div className="page-header">
+        <button 
+          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
+          className="home-btn"
+          title="Về Dashboard"
+        >
+          🏠
+        </button>
+      </div>
       <div className="admin-card">
         <h2>Tạo Tài Khoản Admin</h2>
 

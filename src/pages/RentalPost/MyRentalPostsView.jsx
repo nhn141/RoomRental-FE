@@ -47,7 +47,16 @@ const MyRentalPostsView = () => {
 
   if (loading) {
     return (
-      <div className="rental-posts-container">
+      <div className="rental-container">
+        <div className="page-header">
+          <button 
+            onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
+            className="home-btn"
+            title="Về Dashboard"
+          >
+            🏠
+          </button>
+        </div>
         <h1>Bài Đăng Của Tôi</h1>
         <p>Đang tải...</p>
       </div>
@@ -64,7 +73,16 @@ const MyRentalPostsView = () => {
   }
 
   return (
-    <div className="rental-posts-container">
+    <div className="rental-container">
+      <div className="page-header">
+        <button 
+          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
+          className="home-btn"
+          title="Về Dashboard"
+        >
+          🏠
+        </button>
+      </div>
       <div className="posts-header">
         <h1>Bài Đăng Của Tôi</h1>
         <div className="posts-header-nav">

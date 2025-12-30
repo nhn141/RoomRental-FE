@@ -103,42 +103,13 @@ const Header = () => {
                   </>
                 )}
 
-                {/* Profile & Logout */}
-                <li className="nav-item dropdown">
-                  <a
-                    className="nav-link dropdown-toggle"
-                    href="#"
-                    id="navbarDropdown"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    👤 {user.email}
-                  </a>
-                  <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li>
-                      <Link className="dropdown-item" to="/profile">
-                        👤 Hồ Sơ Của Tôi
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/profile/edit">
-                        ✏️ Chỉnh Sửa Hồ Sơ
-                      </Link>
-                    </li>
-                    <li>
-                      <hr className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <button
-                        className="dropdown-item"
-                        onClick={handleLogout}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        🚪 Đăng Xuất
-                      </button>
-                    </li>
-                  </ul>
+                {/* User Avatar */}
+                <li className="nav-item">
+                  <Link className="user-avatar" to="/profile" title={user.full_name || user.email}>
+                    <span className="avatar-circle">
+                      {user.full_name ? user.full_name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+                    </span>
+                  </Link>
                 </li>
               </>
             ) : (

@@ -107,6 +107,15 @@ const CreateRentalPostView = () => {
 
   return (
     <div className="rental-container">
+      <div className="page-header">
+        <button 
+          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
+          className="home-btn"
+          title="Về Dashboard"
+        >
+          🏠
+        </button>
+      </div>
       <div className="form-header">
         <h1>Tạo Bài Đăng Cho Thuê</h1>
         <div className="form-header-links">

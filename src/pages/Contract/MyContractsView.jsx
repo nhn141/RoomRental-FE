@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useContracts } from '../../hooks/useContracts';
-import '../RentalPost/RentalPost.css';
+import './Contract.css';
 
 const MyContractsView = () => {
   const navigate = useNavigate();
@@ -37,8 +37,8 @@ const MyContractsView = () => {
 
   if (!user || user.role !== 'tenant') {
     return (
-      <div className="container mt-4">
-        <div className="alert alert-danger">
+      <div className="contracts-container">
+        <div className="error-message">
           Chỉ người thuê mới có thể xem trang này
         </div>
       </div>
@@ -46,107 +46,102 @@ const MyContractsView = () => {
   }
 
   return (
-    <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Hợp Đồng Của Tôi</h2>
-        <button
-          className="btn btn-primary"
-          onClick={() => navigate('/rental-posts')}
+    <div className="contracts-container">
+      <div className="page-header">
+        <button 
+          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
+          className="home-btn"
+          title="Về Dashboard"
         >
-          + Tạo Hợp Đồng Mới
+          🏠
         </button>
       </div>
-
-      {error && <div className="alert alert-danger">{error}</div>}
-
-      {/* Filter */}
-      <div className="mb-3">
-        <div className="btn-group" role="group">
+      <div className="contracts-header">
+        <h1>Hợp Đồng Của Tôi</h1>
+        <div className="contracts-header-nav">
           <button
-            type="button"
-            className={`btn ${statusFilter === 'all' ? 'btn-primary' : 'btn-outline-primary'}`}
-            onClick={() => setStatusFilter('all')}
+            className="create-contract-btn"
+            onClick={() => navigate('/rental-posts')}
           >
-            Tất Cả ({myContracts.length})
-          </button>
-          <button
-            type="button"
-            className={`btn ${statusFilter === 'active' ? 'btn-success' : 'btn-outline-success'}`}
-            onClick={() => setStatusFilter('active')}
-          >
-            Đang Hoạt Động ({myContracts.filter(c => c.status === 'active').length})
-          </button>
-          <button
-            type="button"
-            className={`btn ${statusFilter === 'terminated' ? 'btn-danger' : 'btn-outline-danger'}`}
-            onClick={() => setStatusFilter('terminated')}
-          >
-            Đã Kết Thúc ({myContracts.filter(c => c.status === 'terminated').length})
+            + Tạo Hợp Đồng Mới
           </button>
         </div>
+      </div>
+
+      {error && <div className="error-message">{error}</div>}
+
+      {/* Filter */}
+      <div className="filter-section">
+        <button
+          className={`filter-btn ${statusFilter === 'all' ? 'active' : ''}`}
+          onClick={() => setStatusFilter('all')}
+        >
+          Tất Cả ({myContracts.length})
+        </button>
+        <button
+          className={`filter-btn ${statusFilter === 'active' ? 'active' : ''}`}
+          onClick={() => setStatusFilter('active')}
+        >
+          Đang Hoạt Động ({myContracts.filter(c => c.status === 'active').length})
+        </button>
+        <button
+          className={`filter-btn ${statusFilter === 'terminated' ? 'active' : ''}`}
+          onClick={() => setStatusFilter('terminated')}
+        >
+          Đã Kết Thúc ({myContracts.filter(c => c.status === 'terminated').length})
+        </button>
       </div>
 
       {/* Contracts List */}
       {loading ? (
-        <div className="text-center">
-          <div className="spinner-border" role="status">
-            <span className="visually-hidden">Đang tải...</span>
-          </div>
+        <div className="loading-state">
+          <p>Đang tải...</p>
         </div>
       ) : filteredContracts.length === 0 ? (
-        <div className="alert alert-info">
-          Bạn chưa có hợp đồng nào. Hãy tìm phòng và tạo hợp đồng!
+        <div className="empty-state">
+          <p>Bạn chưa có hợp đồng nào. Hãy tìm phòng và tạo hợp đồng!</p>
         </div>
       ) : (
-        <div className="row">
+        <div className="contracts-grid">
           {filteredContracts.map((contract) => (
-            <div key={contract.id} className="col-md-6 col-lg-4 mb-4">
-              <div className="card h-100 shadow-sm hover-card">
-                <div className="card-body">
-                  <div className="d-flex justify-content-between align-items-start mb-2">
-                    <h5 className="card-title">{contract.post_title}</h5>
-                    <span
-                      className={`badge ${
-                        contract.status === 'active' ? 'bg-success' : 'bg-danger'
-                      }`}
-                    >
-                      {contract.status === 'active' ? 'Đang Hoạt Động' : 'Đã Kết Thúc'}
-                    </span>
-                  </div>
+            <div key={contract.id} className="contract-card">
+              <div className="contract-header">
+                <h3>{contract.post_title}</h3>
+                <span className={`status-badge status-${contract.status}`}>
+                  {contract.status === 'active' ? 'Đang Hoạt Động' : 'Đã Kết Thúc'}
+                </span>
+              </div>
 
-                  <p className="card-text text-muted small">
-                    <strong>Chủ Nhà:</strong> {contract.landlord_name}
-                  </p>
+              <div className="contract-body">
+                <p className="landlord">
+                  <strong>Chủ Nhà:</strong> {contract.landlord_name}
+                </p>
+                <p className="price">
+                  <strong>Tiền Thuê:</strong> {contract.monthly_rent?.toLocaleString('vi-VN')} VNĐ/tháng
+                </p>
+                <p>
+                  <strong>Tiền Cọc:</strong> {contract.deposit_amount?.toLocaleString('vi-VN')} VNĐ
+                </p>
+                <p className="date-range">
+                  <strong>Thời Gian:</strong> {new Date(contract.start_date).toLocaleDateString('vi-VN')} - {new Date(contract.end_date).toLocaleDateString('vi-VN')}
+                </p>
+              </div>
 
-                  <div className="mb-2">
-                    <p className="card-text">
-                      <strong>Tiền Thuê:</strong> {contract.monthly_rent?.toLocaleString()} VNĐ/tháng
-                    </p>
-                    <p className="card-text">
-                      <strong>Tiền Cọc:</strong> {contract.deposit_amount?.toLocaleString()} VNĐ
-                    </p>
-                    <p className="card-text small text-muted">
-                      <strong>Thời Gian:</strong> {new Date(contract.start_date).toLocaleDateString('vi-VN')} - {new Date(contract.end_date).toLocaleDateString('vi-VN')}
-                    </p>
-                  </div>
-
-                  <div className="d-flex gap-2 mt-3">
-                    <button
-                      className="btn btn-sm btn-info"
-                      onClick={() => handleViewDetail(contract.id)}
-                    >
-                      Chi Tiết
-                    </button>
-                    {contract.status === 'active' && (
-                      <button
-                        className="btn btn-sm btn-danger"
-                        onClick={() => handleDelete(contract.id)}
-                      >
-                        Xóa
-                      </button>
-                    )}
-                  </div>
-                </div>
+              <div className="contract-footer">
+                <button
+                  className="view-btn"
+                  onClick={() => handleViewDetail(contract.id)}
+                >
+                  Chi Tiết
+                </button>
+                {contract.status === 'active' && (
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(contract.id)}
+                  >
+                    Xóa
+                  </button>
+                )}
               </div>
             </div>
           ))}

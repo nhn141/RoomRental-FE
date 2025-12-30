@@ -3,50 +3,98 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-gradient);
+  padding: var(--spacing-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.error-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: backgroundMove 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes backgroundMove {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
 }
 
 .error-box {
-  background: white;
-  padding: 60px 40px;
-  border-radius: 10px;
+  background: var(--white);
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  border-radius: var(--radius-xl);
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  max-width: 500px;
+  box-shadow: var(--shadow-2xl);
+  max-width: 540px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .error-box h1 {
-  font-size: 80px;
+  font-size: 6rem;
   margin: 0;
-  color: #667eea;
-  font-weight: 700;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900;
+  line-height: 1;
 }
 
 .error-box h2 {
-  font-size: 28px;
-  color: #333;
-  margin: 20px 0;
+  font-size: 1.875rem;
+  color: var(--gray-900);
+  margin: var(--spacing-lg) 0;
+  font-weight: 700;
 }
 
 .error-box p {
-  color: #666;
-  font-size: 16px;
-  margin: 15px 0 30px;
+  color: var(--gray-600);
+  font-size: 1.125rem;
+  margin: var(--spacing-md) 0 var(--spacing-2xl);
+  line-height: 1.7;
 }
 
 .error-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--primary-gradient);
+  color: var(--white);
   border: none;
-  padding: 12px 30px;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 0.875rem 2rem;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+  letter-spacing: 0.01em;
 }
 
 .error-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-xl);
+}
+
+.error-btn:active {
+  transform: translateY(0);
 }

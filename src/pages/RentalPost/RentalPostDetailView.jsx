@@ -30,6 +30,15 @@ const RentalPostDetailView = () => {
 
   return (
     <div className="rental-container">
+      <div className="page-header">
+        <button 
+          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
+          className="home-btn"
+          title="Về Dashboard"
+        >
+          🏠
+        </button>
+      </div>
       <div className="detail-header-nav">
         <button onClick={() => navigate(-1)} className="back-btn">
           ← Quay Lại

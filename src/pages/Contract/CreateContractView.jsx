@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useContracts } from '../../hooks/useContracts';
-import '../RentalPost/RentalPost.css';
+import './Contract.css';
 
 const CreateContractView = () => {
   const navigate = useNavigate();
@@ -117,7 +117,16 @@ const CreateContractView = () => {
   }
 
   return (
-    <div className="container mt-4">
+    <div className="rental-container">
+      <div className="page-header">
+        <button 
+          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
+          className="home-btn"
+          title="Về Dashboard"
+        >
+          🏠
+        </button>
+      </div>
       <div className="card">
         <div className="card-header">
           <h2>Tạo Hợp Đồng Thuê Phòng</h2>
