@@ -21,6 +21,8 @@ import EditProfileView from './pages/Profile/EditProfileView';
 import RentalPostListView from './pages/RentalPost/RentalPostListView';
 import RentalPostDetailView from './pages/RentalPost/RentalPostDetailView';
 import CreateRentalPostView from './pages/RentalPost/CreateRentalPostView';
+import MyRentalPostsView from './pages/RentalPost/MyRentalPostsView';
+import EditRentalPostView from './pages/RentalPost/EditRentalPostView';
 
 // Admin Pages
 import CreateAdminView from './pages/Admin/CreateAdminView';
@@ -100,6 +102,22 @@ function App() {
             element={
               <ProtectedRoute requiredRole="landlord">
                 <CreateRentalPostView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-rental-posts"
+            element={
+              <ProtectedRoute requiredRole="landlord">
+                <MyRentalPostsView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/rental-posts/:id/edit"
+            element={
+              <ProtectedRoute requiredRole="landlord">
+                <EditRentalPostView />
               </ProtectedRoute>
             }
           />

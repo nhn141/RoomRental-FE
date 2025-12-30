@@ -124,11 +124,11 @@ export const useRentalPosts = () => {
     }
   }, []);
 
-  const rejectPost = useCallback(async (postId) => {
+  const rejectPost = useCallback(async (postId, reason) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await rentalPostService.rejectPost(postId);
+      const data = await rentalPostService.rejectPost(postId, reason);
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Lỗi khi từ chối bài đăng';

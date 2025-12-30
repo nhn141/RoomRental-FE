@@ -39,13 +39,13 @@ const rentalPostService = {
 
   // APPROVE bài đăng (Admin)
   approvePost: async (postId) => {
-    const response = await api.put('/rental-posts/approve', { post_id: postId });
+    const response = await api.put('/rental-posts/approve', { id: postId });
     return response.data;
   },
 
   // REJECT bài đăng (Admin)
-  rejectPost: async (postId) => {
-    const response = await api.put('/rental-posts/reject', { post_id: postId });
+  rejectPost: async (postId, reason) => {
+    const response = await api.put('/rental-posts/reject', { id: postId, rejection_reason: reason });
     return response.data;
   },
 };

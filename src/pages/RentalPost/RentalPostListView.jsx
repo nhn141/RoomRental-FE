@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useRentalPosts } from '../../hooks/useRentalPosts';
 import './RentalPost.css';
 
 const RentalPostListView = () => {
   const { user } = useAuth();
-  const { posts, loading, error, fetchAllPosts } = useRentalPosts();
+  const { posts, loading, error, fetchAllPosts, deletePost, approvePost, rejectPost } = useRentalPosts();
   const [filter, setFilter] = useState('all');
   const navigate = useNavigate();
 
@@ -25,13 +25,23 @@ const RentalPostListView = () => {
 
   return (
     <div className="rental-container">
-      <div className="rental-header">
-        <h2>Danh Sách Bài Đăng Cho Thuê</h2>
-        {user?.role === 'landlord' && (
-          <button onClick={() => navigate('/rental-posts/create')} className="create-btn">
-            + Tạo Bài Đăng
-          </button>
-        )}
+      <div className="posts-header">
+        <h1>Danh Sách Bài Đăng Cho Thuê</h1>
+        <div className="posts-header-nav">
+          {user?.role === 'landlord' && (
+            <>
+              <Link to="/rental-posts/create" className="create-post-btn">
+                + Tạo Bài Đăng
+              </Link>
+              <Link to="/my-rental-posts" className="header-link">
+                Bài Đăng Của Tôi
+              </Link>
+            </>
+          )}
+          <Link to={user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant'} className="header-link">
+            Dashboard
+          </Link>
+        </div>
       </div>
 
       {user?.role === 'admin' && (
@@ -99,8 +109,35 @@ const RentalPostListView = () => {
 
                 {user?.role === 'admin' && post.status === 'pending' && (
                   <div className="admin-actions">
-                    <button className="approve-btn">Duyệt</button>
-                    <button className="reject-btn">Từ Chối</button>
+                    <button
+                      className="approve-btn"
+                      onClick={async () => {
+                        if (!window.confirm('Bạn chắc chắn muốn duyệt bài này?')) return;
+                        try {
+                          await approvePost(post.id);
+                          fetchAllPosts({ status: filter !== 'all' ? filter : undefined });
+                        } catch (err) {
+                          console.error('Approve error', err);
+                        }
+                      }}
+                    >
+                      Duyệt
+                    </button>
+                    <button
+                      className="reject-btn"
+                      onClick={async () => {
+                        const reason = window.prompt('Lý do từ chối (tùy chọn):');
+                        if (reason === null) return; // cancel
+                        try {
+                          await rejectPost(post.id, reason);
+                          fetchAllPosts({ status: filter !== 'all' ? filter : undefined });
+                        } catch (err) {
+                          console.error('Reject error', err);
+                        }
+                      }}
+                    >
+                      Từ Chối
+                    </button>
                   </div>
                 )}
 
@@ -112,7 +149,20 @@ const RentalPostListView = () => {
                     >
                       Sửa
                     </button>
-                    <button className="delete-btn">Xóa</button>
+                    <button
+                      className="delete-btn"
+                      onClick={async () => {
+                        if (!window.confirm('Bạn chắc chắn muốn xóa bài đăng này?')) return;
+                        try {
+                          await deletePost(post.id);
+                          fetchAllPosts({ status: filter !== 'all' ? filter : undefined });
+                        } catch (err) {
+                          console.error('Delete error', err);
+                        }
+                      }}
+                    >
+                      Xóa
+                    </button>
                   </div>
                 )}
               </div>

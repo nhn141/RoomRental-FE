@@ -12,6 +12,9 @@ const RegisterLandlord = () => {
     phone_number: '',
     identity_card: '',
     address_detail: '',
+    gender: '',
+    dob: '',
+    bio: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -98,8 +101,33 @@ const RegisterLandlord = () => {
               name="phone_number"
               value={formData.phone_number}
               onChange={handleChange}
-              required
               placeholder="Nhập số điện thoại"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="gender">Giới Tính:</label>
+            <select
+              id="gender"
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+            >
+              <option value="">-- Chọn --</option>
+              <option value="male">Nam</option>
+              <option value="female">Nữ</option>
+              <option value="other">Khác</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="dob">Ngày Sinh:</label>
+            <input
+              type="date"
+              id="dob"
+              name="dob"
+              value={formData.dob}
+              onChange={handleChange}
             />
           </div>
 
@@ -123,6 +151,18 @@ const RegisterLandlord = () => {
               value={formData.address_detail}
               onChange={handleChange}
               placeholder="Nhập địa chỉ chi tiết"
+              rows="3"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="bio">Giới Thiệu:</label>
+            <textarea
+              id="bio"
+              name="bio"
+              value={formData.bio}
+              onChange={handleChange}
+              placeholder="Giới thiệu về bản thân..."
               rows="3"
             />
           </div>

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLocation } from '../hooks/useLocation';
 import './Auth.css';
 
 const RegisterTenant = () => {
@@ -10,21 +11,53 @@ const RegisterTenant = () => {
     confirmPassword: '',
     full_name: '',
     phone_number: '',
-    looking_for_area: '',
+    target_province_code: '',
+    target_ward_code: '',
+    budget_min: '',
+    budget_max: '',
+    gender: '',
+    dob: '',
+    bio: '',
   });
+  const [provinceNameDisplay, setProvinceNameDisplay] = useState('');
+  const [wardNameDisplay, setWardNameDisplay] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { registerTenant } = useAuth();
+  const { provinces, wards, fetchWards } = useLocation();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name === 'target_province_code') {
+      const selectedProvince = provinces.find(p => p.id === value);
+      setFormData((prev) => ({
+        ...prev,
+        target_province_code: value,
+        target_ward_code: '',
+      }));
+      setProvinceNameDisplay(selectedProvince ? (selectedProvince.full_name || selectedProvince.name) : value);
+      setWardNameDisplay('');
+      
+      if (value) {
+        fetchWards(value);
+      }
+    } else if (name === 'target_ward_code') {
+      const selectedWard = wards.find(w => w.id === value);
+      setFormData((prev) => ({
+        ...prev,
+        target_ward_code: value,
+      }));
+      setWardNameDisplay(selectedWard ? (selectedWard.name_with_type || selectedWard.name) : value);
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -102,14 +135,105 @@ const RegisterTenant = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="looking_for_area">Khu vực tìm kiếm:</label>
+            <label htmlFor="gender">Giới Tính:</label>
+            <select
+              id="gender"
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+            >
+              <option value="">-- Chọn --</option>
+              <option value="male">Nam</option>
+              <option value="female">Nữ</option>
+              <option value="other">Khác</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="dob">Ngày Sinh:</label>
+            <input
+              type="date"
+              id="dob"
+              name="dob"
+              value={formData.dob}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="target_province_code">Tỉnh/Thành Phố:</label>
             <input
               type="text"
-              id="looking_for_area"
-              name="looking_for_area"
-              value={formData.looking_for_area}
+              id="target_province_code"
+              name="target_province_code"
+              value={provinceNameDisplay}
               onChange={handleChange}
-              placeholder="VD: Quận 1, TP.HCM"
+              placeholder="Nhập hoặc chọn tỉnh/thành phố..."
+              list="provinces-list"
+            />
+            <datalist id="provinces-list">
+              {provinces.map(province => (
+                <option key={province.id} value={province.id}>
+                  {province.full_name || province.name}
+                </option>
+              ))}
+            </datalist>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="target_ward_code">Phường/Xã:</label>
+            <input
+              type="text"
+              id="target_ward_code"
+              name="target_ward_code"
+              value={wardNameDisplay}
+              onChange={handleChange}
+              placeholder="Nhập hoặc chọn phường/xã..."
+              list="wards-list"
+              disabled={!formData.target_province_code}
+            />
+            <datalist id="wards-list">
+              {wards.map(ward => (
+                <option key={ward.id} value={ward.id}>
+                  {ward.name_with_type || ward.name}
+                </option>
+              ))}
+            </datalist>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="budget_min">Ngân Sách Tối Thiểu (VND):</label>
+            <input
+              type="number"
+              id="budget_min"
+              name="budget_min"
+              value={formData.budget_min}
+              onChange={handleChange}
+              placeholder="VD: 2000000"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="budget_max">Ngân Sách Tối Đa (VND):</label>
+            <input
+              type="number"
+              id="budget_max"
+              name="budget_max"
+              value={formData.budget_max}
+              onChange={handleChange}
+              placeholder="VD: 5000000"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="bio">Giới Thiệu:</label>
+            <textarea
+              id="bio"
+              name="bio"
+              value={formData.bio}
+              onChange={handleChange}
+              placeholder="Giới thiệu về bản thân..."
+              rows="3"
             />
           </div>
 

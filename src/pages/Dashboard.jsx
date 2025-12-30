@@ -53,10 +53,10 @@ const Dashboard = () => {
                 <h4>Quản Lý Người Dùng</h4>
                 <p>Quản lý tất cả người dùng trong hệ thống</p>
               </div>
-              <div className="card">
-                <h4>Quản Lý Bài Đăng</h4>
+              <Link to="/rental-posts?status=pending" className="card">
+                <h4>Duyệt Bài Đăng</h4>
                 <p>Duyệt và quản lý các bài đăng cho thuê</p>
-              </div>
+              </Link>
               <div className="card">
                 <h4>Báo Cáo</h4>
                 <p>Xem báo cáo và thống kê hệ thống</p>
@@ -69,14 +69,14 @@ const Dashboard = () => {
           <div className="role-specific-content">
             <h3>Bảng Điều Khiển Chủ Nhà</h3>
             <div className="cards-grid">
-              <div className="card">
+              <Link to="/rental-posts/create" className="card">
                 <h4>Đăng Bài Cho Thuê</h4>
                 <p>Tạo bài đăng cho các phòng cho thuê</p>
-              </div>
-              <div className="card">
+              </Link>
+              <Link to="/my-rental-posts" className="card">
                 <h4>Quản Lý Bài Đăng</h4>
                 <p>Chỉnh sửa, xóa hoặc ẩn bài đăng</p>
-              </div>
+              </Link>
               <div className="card">
                 <h4>Quản Lý Yêu Cầu</h4>
                 <p>Xem các yêu cầu từ người thuê</p>
@@ -89,10 +89,10 @@ const Dashboard = () => {
           <div className="role-specific-content">
             <h3>Bảng Điều Khiển Người Thuê</h3>
             <div className="cards-grid">
-              <div className="card">
+              <Link to="/rental-posts?status=approved" className="card">
                 <h4>Tìm Kiếm Phòng</h4>
                 <p>Duyệt các bài đăng phòng cho thuê</p>
-              </div>
+              </Link>
               <div className="card">
                 <h4>Yêu Cầu Của Tôi</h4>
                 <p>Xem lịch sử các yêu cầu thuê phòng</p>

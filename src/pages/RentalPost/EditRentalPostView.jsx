@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useRentalPosts } from '../../hooks/useRentalPosts';
 import { useLocation } from '../../hooks/useLocation';
 import { useAuth } from '../../context/AuthContext';
 import './RentalPost.css';
 
-const CreateRentalPostView = () => {
+const EditRentalPostView = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { createPost, loading, error } = useRentalPosts();
+  const { currentPost, fetchPostById, updatePost, loading, error } = useRentalPosts();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -26,6 +27,57 @@ const CreateRentalPostView = () => {
   const [provinceNameDisplay, setProvinceNameDisplay] = useState('');
   const [wardNameDisplay, setWardNameDisplay] = useState('');
   const [errors, setErrors] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const loadPost = async () => {
+      try {
+        await fetchPostById(id);
+      } catch (err) {
+        console.error('Lỗi khi lấy bài đăng:', err);
+      }
+    };
+    loadPost();
+  }, [id, fetchPostById]);
+
+  useEffect(() => {
+    if (currentPost) {
+      // Check if landlord owns this post
+      if (currentPost.landlord_id !== user?.id) {
+        alert('Bạn không có quyền chỉnh sửa bài đăng này');
+        navigate('/my-rental-posts');
+        return;
+      }
+
+      // Check if post can be edited (only pending posts)
+      if (currentPost.status !== 'pending') {
+        alert('Chỉ có thể chỉnh sửa bài đăng đang chờ duyệt');
+        navigate('/my-rental-posts');
+        return;
+      }
+
+      // Pre-fill form with post data
+      setFormData({
+        title: currentPost.title || '',
+        description: currentPost.description || '',
+        price: currentPost.price || '',
+        area: currentPost.area || '',
+        address_detail: currentPost.address_detail || '',
+        province_code: currentPost.province_code || '',
+        ward_code: currentPost.ward_code || '',
+        max_tenants: currentPost.max_tenants || '',
+        amenities: currentPost.amenities ? currentPost.amenities.join(', ') : '',
+        electricity_price: currentPost.electricity_price || '',
+        water_price: currentPost.water_price || '',
+      });
+      setProvinceNameDisplay(currentPost.province_name || '');
+      setWardNameDisplay(currentPost.ward_name || '');
+
+      if (currentPost.province_code) {
+        fetchWards(currentPost.province_code);
+      }
+    }
+  }, [currentPost, user?.id, navigate, fetchWards]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -77,7 +129,6 @@ const CreateRentalPostView = () => {
     }
 
     try {
-      // map FE names -> BE expected fields
       const payload = {
         title: formData.title,
         description: formData.description || null,
@@ -88,27 +139,41 @@ const CreateRentalPostView = () => {
         province_code: formData.province_code,
         ward_code: formData.ward_code,
         amenities: formData.amenities ? formData.amenities.split(',').map(a => a.trim()).filter(a => a) : [],
-        images: [],
+        images: currentPost.images || [],
         electricity_price: formData.electricity_price ? parseFloat(formData.electricity_price) : null,
         water_price: formData.water_price ? parseFloat(formData.water_price) : null,
       };
 
-      await createPost(payload);
-      alert('Tạo bài đăng thành công! Chờ duyệt từ admin.');
-      navigate('/rental-posts');
+      await updatePost(id, payload);
+      alert('Cập nhật bài đăng thành công!');
+      navigate('/my-rental-posts');
     } catch (err) {
-      console.error('Lỗi tạo bài đăng:', err);
+      console.error('Lỗi cập nhật bài đăng:', err);
     }
   };
 
-  useEffect(() => {
-    if (formData.province_code) fetchWards(formData.province_code);
-  }, [formData.province_code, fetchWards]);
+  if (loading) {
+    return (
+      <div className="rental-container">
+        <h1>Chỉnh Sửa Bài Đăng</h1>
+        <p>Đang tải...</p>
+      </div>
+    );
+  }
+
+  if (!currentPost) {
+    return (
+      <div className="rental-container">
+        <h1>Chỉnh Sửa Bài Đăng</h1>
+        <p>Không tìm thấy bài đăng</p>
+      </div>
+    );
+  }
 
   return (
     <div className="rental-container">
       <div className="form-header">
-        <h1>Tạo Bài Đăng Cho Thuê</h1>
+        <h1>Chỉnh Sửa Bài Đăng</h1>
         <div className="form-header-links">
           <Link to="/my-rental-posts" className="header-link">
             Bài Đăng Của Tôi
@@ -164,6 +229,20 @@ const CreateRentalPostView = () => {
               className={errors.area ? 'input-error' : ''}
             />
             {errors.area && <span className="error-text">{errors.area}</span>}
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group full-width">
+            <label htmlFor="description">Mô Tả Chi Tiết:</label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Mô tả chi tiết về phòng..."
+              rows="4"
+            />
           </div>
         </div>
 
@@ -262,23 +341,7 @@ const CreateRentalPostView = () => {
 
         <div className="form-row">
           <div className="form-group full-width">
-            <label htmlFor="description">Mô Tả Chi Tiết: *</label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Mô tả chi tiết về phòng..."
-              rows="5"
-              className={errors.description ? 'input-error' : ''}
-            />
-            {errors.description && <span className="error-text">{errors.description}</span>}
-          </div>
-        </div>
-
-        <div className="form-row">
-          <div className="form-group full-width">
-            <label htmlFor="amenities">Tiện Nghi (cách nhau bằng dấu phẩy):</label>
+            <label htmlFor="amenities">Tiện Nghi (cách nhau bởi dấu phẩy):</label>
             <textarea
               id="amenities"
               name="amenities"
@@ -292,10 +355,10 @@ const CreateRentalPostView = () => {
 
         <div className="form-actions">
           <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? 'Đang tạo...' : 'Tạo Bài Đăng'}
+            {loading ? 'Đang cập nhật...' : 'Cập Nhật Bài Đăng'}
           </button>
           <Link to="/my-rental-posts" className="cancel-btn">
-            Quay Lại
+            Hủy
           </Link>
         </div>
       </form>
@@ -303,4 +366,4 @@ const CreateRentalPostView = () => {
   );
 };
 
-export default CreateRentalPostView;
+export default EditRentalPostView;

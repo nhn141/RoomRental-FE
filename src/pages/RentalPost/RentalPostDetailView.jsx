@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useRentalPosts } from '../../hooks/useRentalPosts';
+import { useAuth } from '../../context/AuthContext';
 import './RentalPost.css';
 
 const RentalPostDetailView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { currentPost, loading, error, fetchPostById } = useRentalPosts();
 
   useEffect(() => {
@@ -28,13 +30,30 @@ const RentalPostDetailView = () => {
 
   return (
     <div className="rental-container">
-      <button onClick={() => navigate(-1)} className="back-btn">
-        ← Quay Lại
-      </button>
+      <div className="detail-header-nav">
+        <button onClick={() => navigate(-1)} className="back-btn">
+          ← Quay Lại
+        </button>
+        <div className="detail-nav-links">
+          <Link to="/rental-posts" className="header-link">
+            Danh Sách Bài Đăng
+          </Link>
+          <Link to={user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant'} className="header-link">
+            Dashboard
+          </Link>
+        </div>
+      </div>
 
       <div className="detail-card">
         <div className="detail-header">
-          <h1>{currentPost.title}</h1>
+          <div>
+            <h1>{currentPost.title}</h1>
+            <p className="detail-location">
+              {currentPost.address_detail && `${currentPost.address_detail} • `}
+              {currentPost.ward_name && `${currentPost.ward_name} • `}
+              {currentPost.province_name}
+            </p>
+          </div>
           <span className={`status-badge status-${currentPost.status}`}>
             {currentPost.status === 'approved' && 'Đã Duyệt'}
             {currentPost.status === 'pending' && 'Chờ Duyệt'}
@@ -45,56 +64,82 @@ const RentalPostDetailView = () => {
         <div className="detail-body">
           <div className="price-section">
             <h2 className="price">
-              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(currentPost.price)}
+              {currentPost.price?.toLocaleString('vi-VN')} VND
             </h2>
             <p>/ Tháng</p>
           </div>
 
           <div className="info-grid">
             <div className="info-item">
-              <label>Địa Chỉ:</label>
-              <p>{currentPost.address}</p>
-            </div>
-            <div className="info-item">
               <label>Diện Tích:</label>
               <p>{currentPost.area} m²</p>
             </div>
             <div className="info-item">
-              <label>Số Phòng Ngủ:</label>
-              <p>{currentPost.num_bedrooms || 'N/A'}</p>
+              <label>Số Người Tối Đa:</label>
+              <p>{currentPost.max_tenants || 'Không giới hạn'}</p>
             </div>
-            <div className="info-item">
-              <label>Số Phòng Tắm:</label>
-              <p>{currentPost.num_bathrooms || 'N/A'}</p>
-            </div>
+            {currentPost.electricity_price && (
+              <div className="info-item">
+                <label>Giá Điện:</label>
+                <p>{currentPost.electricity_price?.toLocaleString('vi-VN')} VND/kWh</p>
+              </div>
+            )}
+            {currentPost.water_price && (
+              <div className="info-item">
+                <label>Giá Nước:</label>
+                <p>{currentPost.water_price?.toLocaleString('vi-VN')} VND/m³</p>
+              </div>
+            )}
           </div>
 
-          <div className="description-section">
-            <label>Mô Tả Chi Tiết:</label>
-            <p>{currentPost.description}</p>
-          </div>
-
-          <div className="amenities-section">
-            <label>Tiện Nghi:</label>
-            <div className="amenities-list">
-              {currentPost.amenities ? (
-                currentPost.amenities.split(',').map((amenity, idx) => (
-                  <span key={idx} className="amenity-tag">{amenity.trim()}</span>
-                ))
-              ) : (
-                <p>Không có thông tin tiện nghi</p>
-              )}
+          {currentPost.description && (
+            <div className="description-section">
+              <label>Mô Tả Chi Tiết:</label>
+              <p>{currentPost.description}</p>
             </div>
-          </div>
+          )}
+
+          {currentPost.amenities && currentPost.amenities.length > 0 && (
+            <div className="amenities-section">
+              <label>Tiện Nghi:</label>
+              <div className="amenities-list">
+                {Array.isArray(currentPost.amenities) ? (
+                  currentPost.amenities.map((amenity, idx) => (
+                    <span key={idx} className="amenity-tag">{amenity}</span>
+                  ))
+                ) : (
+                  <p>Không có thông tin tiện nghi</p>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="contact-section">
-            <label>Thông Tin Liên Hệ:</label>
-            <p><strong>Chủ Nhà:</strong> {currentPost.landlord_name}</p>
-            <p><strong>Điện Thoại:</strong> {currentPost.landlord_phone}</p>
-            <p><strong>Email:</strong> {currentPost.landlord_email}</p>
+            <label>Thông Tin Chủ Nhà:</label>
+            <p><strong>Tên:</strong> {currentPost.landlord_name}</p>
+            {currentPost.landlord_phone && (
+              <p><strong>Điện Thoại:</strong> {currentPost.landlord_phone}</p>
+            )}
+            {currentPost.landlord_email && (
+              <p><strong>Email:</strong> {currentPost.landlord_email}</p>
+            )}
+            {currentPost.reputation_score !== undefined && (
+              <p><strong>Điểm Uy Tín:</strong> {currentPost.reputation_score?.toFixed(1)} ⭐</p>
+            )}
           </div>
 
+          {currentPost.rejection_reason && currentPost.status === 'rejected' && (
+            <div className="rejection-section">
+              <label>Lý Do Từ Chối:</label>
+              <p>{currentPost.rejection_reason}</p>
+            </div>
+          )}
+
           <div className="date-section">
+            <small>Đăng lúc: {new Date(currentPost.created_at).toLocaleDateString('vi-VN')}</small>
+            {currentPost.updated_at && (
+              <small>Cập nhật: {new Date(currentPost.updated_at).toLocaleDateString('vi-VN')}</small>
+            )}
             <small>Đăng lúc: {new Date(currentPost.created_at).toLocaleDateString('vi-VN')}</small>
           </div>
         </div>

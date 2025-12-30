@@ -1,9 +1,13 @@
 import React, { useEffect } from 'react';
 import { useProfile } from '../../hooks/useProfile';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import '../Profile.css';
 
 const ProfileView = () => {
   const { profile, loading, error, fetchProfile } = useProfile();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProfile();
@@ -147,9 +151,17 @@ const ProfileView = () => {
             </>
           )}
         </div>
-        <a href="/profile/edit" className="edit-btn">
-          Chỉnh Sửa Profile
-        </a>
+        <div className="profile-actions">
+          <a href="/profile/edit" className="edit-btn">
+            Chỉnh Sửa Profile
+          </a>
+          <button 
+            onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
+            className="back-btn"
+          >
+            Quay Lại Dashboard
+          </button>
+        </div>
       </div>
     </div>
   );
