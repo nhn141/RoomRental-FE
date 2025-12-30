@@ -38,16 +38,114 @@ const ProfileView = () => {
             <label>Vai Trò:</label>
             <span className="role-badge">{profile.role}</span>
           </div>
-          <div className="profile-row">
-            <label>Trạng Thái:</label>
-            <span className={profile.is_active ? 'status-active' : 'status-inactive'}>
-              {profile.is_active ? 'Hoạt động' : 'Vô hiệu'}
-            </span>
-          </div>
-          <div className="profile-row">
-            <label>Tạo Lúc:</label>
-            <span>{new Date(profile.created_at).toLocaleDateString('vi-VN')}</span>
-          </div>
+          {profile.phone_number && (
+            <div className="profile-row">
+              <label>Số Điện Thoại:</label>
+              <span>{profile.phone_number}</span>
+            </div>
+          )}
+          
+          {/* Tenant specific fields */}
+          {profile.role === 'tenant' && (
+            <>
+              {profile.gender && (
+                <div className="profile-row">
+                  <label>Giới Tính:</label>
+                  <span>
+                    {profile.gender === 'male' ? 'Nam' : profile.gender === 'female' ? 'Nữ' : 'Khác'}
+                  </span>
+                </div>
+              )}
+              {profile.dob && (
+                <div className="profile-row">
+                  <label>Ngày Sinh:</label>
+                  <span>{new Date(profile.dob).toLocaleDateString('vi-VN')}</span>
+                </div>
+              )}
+              {profile.target_province_name && (
+                <div className="profile-row">
+                  <label>Tỉnh/Thành Phố:</label>
+                  <span>{profile.target_province_name}</span>
+                </div>
+              )}
+              {profile.target_ward_name && (
+                <div className="profile-row">
+                  <label>Phường/Xã:</label>
+                  <span>{profile.target_ward_name}</span>
+                </div>
+              )}
+              {profile.budget_min && (
+                <div className="profile-row">
+                  <label>Ngân Sách:</label>
+                  <span>
+                    {profile.budget_min.toLocaleString('vi-VN')} - {profile.budget_max.toLocaleString('vi-VN')} VND
+                  </span>
+                </div>
+              )}
+              {profile.bio && (
+                <div className="profile-row">
+                  <label>Giới Thiệu:</label>
+                  <span>{profile.bio}</span>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Landlord specific fields */}
+          {profile.role === 'landlord' && (
+            <>
+              {profile.gender && (
+                <div className="profile-row">
+                  <label>Giới Tính:</label>
+                  <span>
+                    {profile.gender === 'male' ? 'Nam' : profile.gender === 'female' ? 'Nữ' : 'Khác'}
+                  </span>
+                </div>
+              )}
+              {profile.dob && (
+                <div className="profile-row">
+                  <label>Ngày Sinh:</label>
+                  <span>{new Date(profile.dob).toLocaleDateString('vi-VN')}</span>
+                </div>
+              )}
+              {profile.identity_card && (
+                <div className="profile-row">
+                  <label>Số CCCD/CMND:</label>
+                  <span>{profile.identity_card}</span>
+                </div>
+              )}
+              {profile.address_detail && (
+                <div className="profile-row">
+                  <label>Địa Chỉ:</label>
+                  <span>{profile.address_detail}</span>
+                </div>
+              )}
+              {profile.reputation_score !== undefined && (
+                <div className="profile-row">
+                  <label>Điểm Uy Tín:</label>
+                  <span>{profile.reputation_score.toFixed(1)} ⭐</span>
+                </div>
+              )}
+              {profile.bio && (
+                <div className="profile-row">
+                  <label>Giới Thiệu:</label>
+                  <span>{profile.bio}</span>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Admin specific fields */}
+          {profile.role === 'admin' && (
+            <>
+              {profile.department && (
+                <div className="profile-row">
+                  <label>Phòng Ban:</label>
+                  <span>{profile.department}</span>
+                </div>
+              )}
+            </>
+          )}
         </div>
         <a href="/profile/edit" className="edit-btn">
           Chỉnh Sửa Profile

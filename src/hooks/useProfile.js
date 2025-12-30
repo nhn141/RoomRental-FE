@@ -11,8 +11,8 @@ export const useProfile = () => {
     setError(null);
     try {
       const data = await profileService.getProfile();
-      // BE thường trả về { user: ... } hoặc trực tiếp object user
-      setProfile(data.user || data);
+      // BE trả về { profile }
+      setProfile(data.profile || data);
       return data;
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Lỗi khi lấy thông tin cá nhân';
@@ -28,8 +28,9 @@ export const useProfile = () => {
     setError(null);
     try {
       const res = await profileService.updateProfile(data);
-      // Cập nhật state local ngay lập tức để UI phản hồi nhanh
-      setProfile(prev => ({ ...prev, ...data }));
+      // BE trả về { profile } - cập nhật từ response
+      const updatedProfile = res.profile || res;
+      setProfile(updatedProfile);
       return res;
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Lỗi khi cập nhật thông tin';
