@@ -145,6 +145,14 @@ const RentalPostDetailView = () => {
         </div>
 
         <div className="detail-actions">
+          {user?.role === 'tenant' && currentPost.status === 'approved' && (
+            <button
+              onClick={() => navigate(`/contracts/create?post_id=${currentPost.id}`)}
+              className="create-contract-btn"
+            >
+              📋 Tạo Hợp Đồng
+            </button>
+          )}
           <button onClick={() => navigate(-1)} className="cancel-btn">
             Quay Lại
           </button>

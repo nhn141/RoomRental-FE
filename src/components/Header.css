@@ -1,0 +1,88 @@
+/* Header Styles */
+.navbar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.5px;
+}
+
+.navbar-brand:hover {
+  opacity: 0.8;
+}
+
+.navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 500;
+  margin: 0 8px;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #fff !important;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.navbar-nav .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid #fff;
+}
+
+.dropdown-menu {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-item {
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #e7f1ff;
+  color: #667eea;
+  padding-left: 20px;
+}
+
+.dropdown-divider {
+  border-color: #dee2e6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .navbar-nav {
+    margin-top: 1rem;
+  }
+
+  .navbar-nav .nav-link {
+    padding: 0.5rem 0;
+    border-left: 3px solid transparent;
+    padding-left: 0.75rem;
+  }
+
+  .navbar-nav .nav-link:hover {
+    border-left-color: #fff;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar-brand {
+    font-size: 1.3rem;
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 0.95rem;
+    margin: 0;
+  }
+}

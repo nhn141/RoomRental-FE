@@ -27,6 +27,12 @@ import EditRentalPostView from './pages/RentalPost/EditRentalPostView';
 // Admin Pages
 import CreateAdminView from './pages/Admin/CreateAdminView';
 
+// Contract Pages
+import CreateContractView from './pages/Contract/CreateContractView';
+import MyContractsView from './pages/Contract/MyContractsView';
+import LandlordContractsView from './pages/Contract/LandlordContractsView';
+import ContractDetailView from './pages/Contract/ContractDetailView';
+
 import './App.css';
 
 function App() {
@@ -136,6 +142,40 @@ function App() {
             element={
               <ProtectedRoute requiredRole="admin">
                 <CreateAdminView />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Routes - Contracts */}
+          <Route
+            path="/contracts/create"
+            element={
+              <ProtectedRoute requiredRole="tenant">
+                <CreateContractView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/contracts/my"
+            element={
+              <ProtectedRoute requiredRole="tenant">
+                <MyContractsView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/contracts/landlord"
+            element={
+              <ProtectedRoute requiredRole="landlord">
+                <LandlordContractsView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/contracts/:id"
+            element={
+              <ProtectedRoute>
+                <ContractDetailView />
               </ProtectedRoute>
             }
           />
