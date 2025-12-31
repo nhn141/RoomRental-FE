@@ -176,9 +176,6 @@ const ContractDetailView = () => {
                     </div>
                   </div>
                 </div>
-                <p>
-                  <strong>Tổng Tiền (Thuê + Cọc):</strong> {(currentContract.monthly_rent + currentContract.deposit_amount)?.toLocaleString()} VNĐ
-                </p>
               </div>
 
               {/* Link hợp đồng */}

@@ -48,6 +48,12 @@ const rentalPostService = {
     const response = await api.put('/rental-posts/reject', { id: postId, rejection_reason: reason });
     return response.data;
   },
+
+  // GET danh sách phòng được gợi ý cho tenant
+  getRecommendedPosts: async () => {
+    const response = await api.get('/rental-posts/recommendations/my');
+    return response.data;
+  },
 };
 
 export default rentalPostService;

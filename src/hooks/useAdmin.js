@@ -20,5 +20,35 @@ export const useAdmin = () => {
     }
   }, []);
 
-  return { loading, error, createAdmin };
+  const getAllUsers = useCallback(async (params = {}) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await adminService.getAllUsers(params);
+      return res;
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || 'Lỗi khi lấy danh sách người dùng';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const getAllContracts = useCallback(async (params = {}) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await adminService.getAllContracts(params);
+      return res;
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || 'Lỗi khi lấy danh sách hợp đồng';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { loading, error, createAdmin, getAllUsers, getAllContracts };
 };

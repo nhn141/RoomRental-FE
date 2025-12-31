@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useContracts } from '../../hooks/useContracts';
+import rentalPostService from '../../services/rentalPostService';
 import './Contract.css';
 
 const CreateContractView = () => {
@@ -20,6 +21,7 @@ const CreateContractView = () => {
 
   const [postInfo, setPostInfo] = useState(null);
   const [validationError, setValidationError] = useState('');
+  const [fetchingPost, setFetchingPost] = useState(false);
 
   useEffect(() => {
     // Lấy thông tin bài đăng từ URL parameter
@@ -29,15 +31,20 @@ const CreateContractView = () => {
       return;
     }
 
-    // Fetch post details (nên call API rental-posts/:id)
+    // Fetch post details
     const fetchPostDetails = async () => {
+      setFetchingPost(true);
       try {
-        // TODO: import rentalPostService
-        // const postData = await rentalPostService.getPostById(postId);
-        // setPostInfo(postData.post);
-        console.log('Fetching post details for:', postId);
+        const data = await rentalPostService.getPostById(postId);
+        setPostInfo(data.post);
+        setFormData(prev => ({
+          ...prev,
+          monthly_rent: data.post.price || ''
+        }));
       } catch (err) {
         setValidationError('Không thể tải thông tin bài đăng');
+      } finally {
+        setFetchingPost(false);
       }
     };
 
@@ -108,8 +115,8 @@ const CreateContractView = () => {
 
   if (!user || user.role !== 'tenant') {
     return (
-      <div className="container mt-4">
-        <div className="alert alert-danger">
+      <div className="rental-container">
+        <div className="error-message" style={{ marginTop: '20px' }}>
           Chỉ người thuê mới có thể tạo hợp đồng
         </div>
       </div>
@@ -127,48 +134,73 @@ const CreateContractView = () => {
           🏠
         </button>
       </div>
-      <div className="card">
-        <div className="card-header">
-          <h2>Tạo Hợp Đồng Thuê Phòng</h2>
-        </div>
-        <div className="card-body">
-          {error && <div className="alert alert-danger">{error}</div>}
-          {validationError && <div className="alert alert-danger">{validationError}</div>}
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ background: 'white', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+          <div style={{ padding: '20px', borderBottom: '1px solid #e0e0e0', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+            <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>📋 Tạo Hợp Đồng Thuê Phòng</h2>
+          </div>
+          <div style={{ padding: '30px' }}>
+            {(error || validationError) && (
+              <div style={{ background: '#fee', border: '1px solid #fcc', padding: '12px', borderRadius: '6px', marginBottom: '20px', color: '#c33' }}>
+                {error || validationError}
+              </div>
+            )}
 
-          {postInfo && (
-            <div className="alert alert-info mb-3">
-              <h5>Bài đăng: {postInfo.title}</h5>
-              <p>Giá: {postInfo.price?.toLocaleString()} VNĐ/tháng</p>
-              <p>Địa chỉ: {postInfo.address_detail}</p>
-            </div>
-          )}
+            {fetchingPost && (
+              <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+                Đang tải thông tin bài đăng...
+              </div>
+            )}
 
-          <form onSubmit={handleSubmit}>
-            <div className="form-group mb-3">
-              <label htmlFor="post_id" className="form-label">
-                ID Bài Đăng *
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="post_id"
-                name="post_id"
-                value={formData.post_id}
-                onChange={handleChange}
-                disabled
-                readOnly
-              />
-            </div>
+            {postInfo && (
+              <div style={{ background: '#f0f4ff', border: '1px solid #e0e8ff', padding: '16px', borderRadius: '8px', marginBottom: '24px' }}>
+                <h5 style={{ margin: '0 0 10px 0', color: '#333', fontWeight: 'bold' }}>📌 Bài đăng: {postInfo.title}</h5>
+                <p style={{ margin: '6px 0', color: '#555' }}>💰 Giá: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(postInfo.price)}/tháng</p>
+                <p style={{ margin: '6px 0', color: '#555' }}>📍 Địa chỉ: {postInfo.address_detail}</p>
+                <p style={{ margin: '6px 0', color: '#555' }}>🏘️ Quận: {postInfo.ward_name}</p>
+              </div>
+            )}
 
-            <div className="row">
-              <div className="col-md-6">
-                <div className="form-group mb-3">
-                  <label htmlFor="start_date" className="form-label">
+            <form onSubmit={handleSubmit}>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#333' }}>
+                  ID Bài Đăng *
+                </label>
+                <input
+                  type="text"
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '1px solid #ddd',
+                    borderRadius: '6px',
+                    fontFamily: 'inherit',
+                    background: '#f5f5f5',
+                    cursor: 'not-allowed'
+                  }}
+                  id="post_id"
+                  name="post_id"
+                  value={formData.post_id}
+                  onChange={handleChange}
+                  disabled
+                  readOnly
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#333' }}>
                     Ngày Bắt Đầu *
                   </label>
                   <input
                     type="date"
-                    className="form-control"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '1px solid #ddd',
+                      borderRadius: '6px',
+                      fontFamily: 'inherit',
+                      boxSizing: 'border-box'
+                    }}
                     id="start_date"
                     name="start_date"
                     value={formData.start_date}
@@ -176,16 +208,21 @@ const CreateContractView = () => {
                     required
                   />
                 </div>
-              </div>
 
-              <div className="col-md-6">
-                <div className="form-group mb-3">
-                  <label htmlFor="end_date" className="form-label">
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#333' }}>
                     Ngày Kết Thúc *
                   </label>
                   <input
                     type="date"
-                    className="form-control"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '1px solid #ddd',
+                      borderRadius: '6px',
+                      fontFamily: 'inherit',
+                      boxSizing: 'border-box'
+                    }}
                     id="end_date"
                     name="end_date"
                     value={formData.end_date}
@@ -194,17 +231,22 @@ const CreateContractView = () => {
                   />
                 </div>
               </div>
-            </div>
 
-            <div className="row">
-              <div className="col-md-6">
-                <div className="form-group mb-3">
-                  <label htmlFor="monthly_rent" className="form-label">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#333' }}>
                     Tiền Thuê Hàng Tháng (VNĐ) *
                   </label>
                   <input
                     type="number"
-                    className="form-control"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '1px solid #ddd',
+                      borderRadius: '6px',
+                      fontFamily: 'inherit',
+                      boxSizing: 'border-box'
+                    }}
                     id="monthly_rent"
                     name="monthly_rent"
                     value={formData.monthly_rent}
@@ -214,16 +256,21 @@ const CreateContractView = () => {
                     required
                   />
                 </div>
-              </div>
 
-              <div className="col-md-6">
-                <div className="form-group mb-3">
-                  <label htmlFor="deposit_amount" className="form-label">
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#333' }}>
                     Tiền Đặt Cọc (VNĐ) *
                   </label>
                   <input
                     type="number"
-                    className="form-control"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '1px solid #ddd',
+                      borderRadius: '6px',
+                      fontFamily: 'inherit',
+                      boxSizing: 'border-box'
+                    }}
                     id="deposit_amount"
                     name="deposit_amount"
                     value={formData.deposit_amount}
@@ -234,43 +281,75 @@ const CreateContractView = () => {
                   />
                 </div>
               </div>
-            </div>
 
-            <div className="form-group mb-3">
-              <label htmlFor="contract_url" className="form-label">
-                Link Hợp Đồng (PDF)
-              </label>
-              <input
-                type="url"
-                className="form-control"
-                id="contract_url"
-                name="contract_url"
-                value={formData.contract_url}
-                onChange={handleChange}
-                placeholder="https://example.com/contract.pdf"
-              />
-              <small className="text-muted">
-                Vui lòng cung cấp link tới file hợp đồng (nếu có)
-              </small>
-            </div>
+              <div style={{ marginBottom: '24px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#333' }}>
+                  Link Hợp Đồng (PDF)
+                </label>
+                <input
+                  type="url"
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    border: '1px solid #ddd',
+                    borderRadius: '6px',
+                    fontFamily: 'inherit',
+                    boxSizing: 'border-box'
+                  }}
+                  id="contract_url"
+                  name="contract_url"
+                  value={formData.contract_url}
+                  onChange={handleChange}
+                  placeholder="https://example.com/contract.pdf"
+                />
+                <small style={{ color: '#666', fontSize: '0.85em', marginTop: '6px', display: 'block' }}>
+                  Vui lòng cung cấp link tới file hợp đồng (nếu có)
+                </small>
+              </div>
 
-            <div className="d-flex gap-2">
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                {loading ? 'Đang tạo...' : 'Tạo Hợp Đồng'}
-              </button>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => navigate(-1)}
-              >
-                Quay Lại
-              </button>
-            </div>
-          </form>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button
+                  type="submit"
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    fontWeight: '600',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    opacity: loading ? 0.7 : 1,
+                    transition: 'all 0.3s ease'
+                  }}
+                  disabled={loading}
+                  onMouseEnter={(e) => !loading && (e.target.style.transform = 'translateY(-2px)')}
+                  onMouseLeave={(e) => (e.target.style.transform = 'translateY(0)')}
+                >
+                  {loading ? '⏳ Đang tạo...' : '✅ Tạo Hợp Đồng'}
+                </button>
+                <button
+                  type="button"
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    background: '#e0e0e0',
+                    color: '#333',
+                    border: 'none',
+                    borderRadius: '6px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onClick={() => navigate(-1)}
+                  onMouseEnter={(e) => (e.target.style.background = '#d0d0d0')}
+                  onMouseLeave={(e) => (e.target.style.background = '#e0e0e0')}
+                >
+                  ← Quay Lại
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

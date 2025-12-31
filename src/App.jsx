@@ -23,9 +23,13 @@ import RentalPostDetailView from './pages/RentalPost/RentalPostDetailView';
 import CreateRentalPostView from './pages/RentalPost/CreateRentalPostView';
 import MyRentalPostsView from './pages/RentalPost/MyRentalPostsView';
 import EditRentalPostView from './pages/RentalPost/EditRentalPostView';
+import RecommendedRoomsView from './pages/RentalPost/RecommendedRoomsView';
 
 // Admin Pages
 import CreateAdminView from './pages/Admin/CreateAdminView';
+import AllUsersView from './pages/Admin/AllUsersView';
+import AdminUserDetailView from './pages/Admin/AdminUserDetailView';
+import AllContractsView from './pages/Admin/AllContractsView';
 
 // Contract Pages
 import CreateContractView from './pages/Contract/CreateContractView';
@@ -104,6 +108,14 @@ function App() {
             }
           />
           <Route
+            path="/rental-posts/recommendations/my"
+            element={
+              <ProtectedRoute requiredRole="tenant">
+                <RecommendedRoomsView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/rental-posts/create"
             element={
               <ProtectedRoute requiredRole="landlord">
@@ -137,6 +149,30 @@ function App() {
           />
 
           {/* Protected Routes - Admin */}
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AllUsersView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users/:id"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminUserDetailView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/contracts"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AllContractsView />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/admin/create"
             element={

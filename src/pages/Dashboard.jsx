@@ -37,6 +37,14 @@ const Dashboard = () => {
             <div className="role-specific-content">
               <h3>Bảng Điều Khiển Quản Trị</h3>
               <div className="cards-grid">
+                <Link to="/admin/users" className="card">
+                  <h4>👥 Xem Tất Cả Người Dùng</h4>
+                  <p>Quản lý và xem danh sách tất cả người dùng</p>
+                </Link>
+                <Link to="/admin/contracts" className="card">
+                  <h4>📋 Xem Tất Cả Hợp Đồng</h4>
+                  <p>Xem danh sách tất cả hợp đồng trong hệ thống</p>
+                </Link>
                 <Link to="/admin/create" className="card">
                   <h4>👤 Tạo Admin</h4>
                   <p>Tạo tài khoản quản trị viên mới</p>
@@ -45,10 +53,6 @@ const Dashboard = () => {
                   <h4>📋 Duyệt Bài Đăng</h4>
                   <p>Duyệt và quản lý các bài đăng cho thuê</p>
                 </Link>
-                <div className="card">
-                  <h4>📊 Báo Cáo</h4>
-                  <p>Xem báo cáo và thống kê hệ thống</p>
-                </div>
               </div>
             </div>
           )}
@@ -77,6 +81,10 @@ const Dashboard = () => {
             <div className="role-specific-content">
               <h3>Bảng Điều Khiển Người Thuê</h3>
               <div className="cards-grid">
+                <Link to="/rental-posts/recommendations/my" className="card">
+                  <h4>🎯 Phòng Được Gợi Ý</h4>
+                  <p>Xem phòng phù hợp với yêu cầu của bạn</p>
+                </Link>
                 <Link to="/rental-posts" className="card">
                   <h4>🔍 Tìm Kiếm Phòng</h4>
                   <p>Duyệt các bài đăng phòng cho thuê</p>
