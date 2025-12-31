@@ -82,13 +82,13 @@ const ProfileView = () => {
               )}
               {profile.target_province_name && (
                 <div className="profile-row">
-                  <label>Tỉnh/Thành Phố:</label>
+                  <label>Tỉnh/Thành Phố đang tìm phòng:</label>
                   <span>{profile.target_province_name}</span>
                 </div>
               )}
               {profile.target_ward_name && (
                 <div className="profile-row">
-                  <label>Phường/Xã:</label>
+                  <label>Phường/Xã đang tìm phòng:</label>
                   <span>{profile.target_ward_name}</span>
                 </div>
               )}

@@ -161,7 +161,7 @@ const RegisterTenant = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="target_province_code">Tỉnh/Thành Phố:</label>
+            <label htmlFor="target_province_code">Tỉnh/Thành Phố cần tìm phòng:</label>
             <input
               type="text"
               id="target_province_code"
@@ -181,7 +181,7 @@ const RegisterTenant = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="target_ward_code">Phường/Xã:</label>
+            <label htmlFor="target_ward_code">Phường/Xã cần tìm phòng:</label>
             <input
               type="text"
               id="target_ward_code"
