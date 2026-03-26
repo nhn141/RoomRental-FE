@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
 
 const Login = () => {
@@ -108,14 +108,14 @@ const Login = () => {
           {role !== 'admin' && (
             <p>
               Chưa có tài khoản?{' '}
-              <a href={`/register/${role}`}>Đăng ký ngay</a>
+              <Link to={`/register/${role}`}>Đăng ký ngay</Link>
             </p>
           )}
           <p>
-            <a href="/forgot-password">Quên mật khẩu?</a>
+            <Link to="/forgot-password">Quên mật khẩu?</Link>
           </p>
           <p>
-            Đã có mã đặt lại? <a href="/reset-password">Đặt lại bằng mã</a>
+            Đã có mã đặt lại? <Link to="/reset-password">Đặt lại bằng mã</Link>
           </p>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useProfile } from '../../hooks/useProfile';
 import { useLocation } from '../../hooks/useLocation';
-import '../Profile.css';
+import './Profile.css';
 
 const EditProfileView = () => {
   const [formData, setFormData] = useState({

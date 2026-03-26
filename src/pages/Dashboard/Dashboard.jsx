@@ -1,7 +1,6 @@
 import React from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import Header from '../components/Header';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -23,10 +22,8 @@ const Dashboard = () => {
   };
 
   return (
-    <>
-      <Header />
-      <div className="dashboard-container">
-        <main className="dashboard-content">
+    <div className="dashboard-container">
+      <main className="dashboard-content">
           <div className="welcome-card">
             <h2>Chào mừng, {user?.full_name}!</h2>
             <p>Bạn đang đăng nhập với vai trò: <strong>{getRoleDisplay(user?.role)}</strong></p>
@@ -100,9 +97,8 @@ const Dashboard = () => {
               </div>
             </div>
           )}
-        </main>
-      </div>
-    </>
+      </main>
+    </div>
   );
 };
 

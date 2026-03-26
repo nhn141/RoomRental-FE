@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useLocation } from '../hooks/useLocation';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { useLocation } from '../../hooks/useLocation';
 import './Auth.css';
 
 const RegisterTenant = () => {
@@ -289,7 +289,7 @@ const RegisterTenant = () => {
         </form>
 
         <p className="auth-link">
-          Đã có tài khoản? <a href="/login">Đăng nhập</a>
+          Đã có tài khoản? <Link to="/login">Đăng nhập</Link>
         </p>
       </div>
     </div>

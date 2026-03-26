@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import authService from '../services/authService';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import authService from '../../services/authService';
 import './Auth.css';
 
 const ResetPassword = () => {
@@ -116,7 +116,7 @@ const ResetPassword = () => {
 
         <div className="auth-links">
           <p>
-            <a href="/login">Quay lại đăng nhập</a>
+            <Link to="/login">Quay lại đăng nhập</Link>
           </p>
         </div>
       </div>

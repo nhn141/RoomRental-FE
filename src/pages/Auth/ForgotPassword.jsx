@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
+import { useNavigate, Link } from 'react-router-dom';
+import authService from '../../services/authService';
 import './Auth.css';
 
 const ForgotPassword = () => {
@@ -54,10 +54,10 @@ const ForgotPassword = () => {
 
         <div className="auth-links">
           <p>
-            <a href="/login">Quay lại đăng nhập</a>
+            <Link to="/login">Quay lại đăng nhập</Link>
           </p>
           <p>
-            Đã có mã đặt lại? <a href="/reset-password">Nhấn vào đây để đặt lại mật khẩu</a>
+            Đã có mã đặt lại? <Link to="/reset-password">Nhấn vào đây để đặt lại mật khẩu</Link>
           </p>
         </div>
       </div>

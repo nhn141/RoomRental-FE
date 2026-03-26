@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useProfile } from '../../hooks/useProfile';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import '../Profile.css';
+import './Profile.css';
 
 const ProfileView = () => {
   const { profile, loading, error, fetchProfile } = useProfile();

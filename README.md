@@ -1,16 +1,81 @@
-# React + Vite
+# RoomRental — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Giao diện người dùng cho hệ thống quản lý thuê phòng trọ. Hỗ trợ 3 vai trò: **Người thuê (Tenant)**, **Chủ nhà (Landlord)**, và **Quản trị viên (Admin)**.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+| Công nghệ | Phiên bản | Mục đích |
+|------------|-----------|----------|
+| React | 19 | UI Library |
+| Vite | 7 | Build tool & Dev server |
+| React Router | 7 | Routing (SPA) |
+| Axios | 1.7 | HTTP Client |
+| Vitest | 4 | Unit testing |
+| ESLint | 9 | Linting |
 
-## React Compiler
+## Yêu cầu hệ thống
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Node.js** >= 18
+- **npm** >= 9
 
-## Expanding the ESLint configuration
+## Cài đặt & Chạy
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+# 1. Clone repo & vào thư mục FE
+cd RoomRental-FE
+
+# 2. Cài dependencies
+npm install
+
+# 3. Tạo file env từ template
+cp .env.example .env.local
+
+# 4. (Tuỳ chỉnh) Sửa giá trị trong .env.local nếu cần
+# Mặc định: VITE_API_URL=http://localhost:4000/api
+
+# 5. Chạy development server
+npm run dev
+```
+
+Mở trình duyệt tại `http://localhost:5173`.
+
+## Scripts
+
+| Lệnh | Mô tả |
+|-------|--------|
+| `npm run dev` | Chạy dev server (HMR) |
+| `npm run build` | Build production bundle |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Kiểm tra lỗi ESLint |
+| `npm test` | Chạy unit tests |
+| `npm run test:ui` | Chạy tests với giao diện web |
+| `npm run test:coverage` | Chạy tests + báo cáo coverage |
+
+## Cấu trúc thư mục
+
+```
+src/
+├── components/          # Shared components (Header, ProtectedRoute, Layout)
+├── context/             # React Context (AuthContext)
+├── hooks/               # Custom hooks (useAuth, useAdmin, useContracts, ...)
+├── pages/               # Feature-based page modules
+│   ├── Auth/            #   Login, Register, ForgotPassword, ResetPassword
+│   ├── Dashboard/       #   Dashboard theo từng vai trò
+│   ├── Profile/         #   Xem & chỉnh sửa hồ sơ
+│   ├── RentalPost/      #   CRUD bài đăng cho thuê
+│   ├── Contract/        #   Quản lý hợp đồng
+│   ├── Admin/           #   Quản trị người dùng & hợp đồng
+│   └── Error/           #   Trang lỗi (403)
+├── services/            # API service layer (axios calls)
+├── routes.jsx           # Centralized route configuration
+├── App.jsx              # App root (Router + AuthProvider)
+└── main.jsx             # Entry point
+```
+
+## Biến môi trường
+
+| Biến | Mô tả | Giá trị mặc định |
+|------|--------|-------------------|
+| `VITE_API_URL` | URL gốc của Backend API | `http://localhost:4000/api` |
+
+> **Lưu ý:** File `.env.local` chứa giá trị thật và **không** được commit vào git. Sử dụng `.env.example` làm template.
