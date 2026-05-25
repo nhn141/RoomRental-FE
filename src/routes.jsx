@@ -8,9 +8,10 @@ import { Login, RegisterTenant, RegisterLandlord, ForgotPassword, ResetPassword 
 // Common Pages
 import { Dashboard } from './pages/Dashboard';
 import { Unauthorized } from './pages/Error';
+import { ChatView } from './pages/Chat';
 
 // Profile Pages
-import { ProfileView, EditProfileView } from './pages/Profile';
+import { ProfileView, EditProfileView, PublicProfileView } from './pages/Profile';
 
 // Rental Post Pages
 import {
@@ -86,6 +87,10 @@ const routes = [
       // Profile
       { path: '/profile', element: <ProfileView /> },
       { path: '/profile/edit', element: <EditProfileView /> },
+      { path: '/users/:id', element: <PublicProfileView /> },
+
+      // Chat
+      { path: '/chat', element: <ChatView /> },
 
       // Rental Posts
       { path: '/rental-posts', element: <RentalPostListView /> },

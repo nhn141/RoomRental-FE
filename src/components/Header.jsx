@@ -1,27 +1,47 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useRealtime } from '../context/RealtimeContext';
 import './Header.css';
+
+const BellIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true" className="header-icon">
+    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+    <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+  </svg>
+);
 
 const Header = () => {
   const { user, logout } = useAuth();
+  const {
+    notifications,
+    unreadCount,
+    markNotificationAsRead,
+    markAllNotificationsAsRead,
+  } = useRealtime();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const accountRef = useRef(null);
+  const notificationRef = useRef(null);
 
   useEffect(() => {
-    if (!isAccountOpen) return undefined;
+    if (!isAccountOpen && !isNotificationOpen) return undefined;
 
     const handlePointerDown = (event) => {
       if (accountRef.current && !accountRef.current.contains(event.target)) {
         setIsAccountOpen(false);
+      }
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setIsNotificationOpen(false);
       }
     };
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
         setIsAccountOpen(false);
+        setIsNotificationOpen(false);
       }
     };
 
@@ -32,10 +52,11 @@ const Header = () => {
       document.removeEventListener('mousedown', handlePointerDown);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isAccountOpen]);
+  }, [isAccountOpen, isNotificationOpen]);
 
   const handleLogout = () => {
     setIsAccountOpen(false);
+    setIsNotificationOpen(false);
     setIsMenuOpen(false);
     logout();
     navigate('/login');
@@ -43,8 +64,35 @@ const Header = () => {
 
   const handleViewProfile = () => {
     setIsAccountOpen(false);
+    setIsNotificationOpen(false);
     setIsMenuOpen(false);
     navigate('/profile');
+  };
+
+  const handleNotificationClick = async (notification) => {
+    try {
+      await markNotificationAsRead(notification);
+    } catch (error) {
+      console.error('Mark notification read error', error);
+    }
+
+    setIsNotificationOpen(false);
+    setIsAccountOpen(false);
+    setIsMenuOpen(false);
+
+    const conversationId = notification.metadata?.conversation_id;
+    const link = notification.link_url || (conversationId ? `/chat?conversationId=${conversationId}` : null);
+    if (link) {
+      navigate(link);
+    }
+  };
+
+  const handleMarkAllNotifications = async () => {
+    try {
+      await markAllNotificationsAsRead();
+    } catch (error) {
+      console.error('Mark all notifications read error', error);
+    }
   };
 
   const getDashboardPath = () => {
@@ -67,6 +115,17 @@ const Header = () => {
   const closeMenus = () => {
     setIsMenuOpen(false);
     setIsAccountOpen(false);
+    setIsNotificationOpen(false);
+  };
+
+  const formatNotificationTime = (value) => {
+    if (!value) return '';
+    return new Date(value).toLocaleString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   };
 
   const renderNavLink = (to, label) => (
@@ -123,6 +182,7 @@ const Header = () => {
             {user ? (
               <>
                 {renderNavLink(getDashboardPath(), 'Dashboard')}
+                {renderNavLink('/chat', 'Tin nhắn')}
 
                 {user.role === 'tenant' && (
                   <>
@@ -145,6 +205,61 @@ const Header = () => {
                     {renderNavLink('/rental-posts', 'Quản lý bài đăng')}
                   </>
                 )}
+
+                <li className="nav-item notification-menu" ref={notificationRef}>
+                  <button
+                    type="button"
+                    className="notification-trigger"
+                    title="Thông báo"
+                    aria-haspopup="menu"
+                    aria-expanded={isNotificationOpen}
+                    onClick={() => {
+                      setIsNotificationOpen((open) => !open);
+                      setIsAccountOpen(false);
+                    }}
+                  >
+                    <BellIcon />
+                    {unreadCount > 0 && (
+                      <span className="notification-count">{unreadCount > 99 ? '99+' : unreadCount}</span>
+                    )}
+                  </button>
+
+                  {isNotificationOpen && (
+                    <div className="notification-popover" role="menu">
+                      <div className="notification-header">
+                        <strong>Thông báo</strong>
+                        {unreadCount > 0 && (
+                          <button
+                            type="button"
+                            className="notification-read-all"
+                            onClick={handleMarkAllNotifications}
+                          >
+                            Đọc tất cả
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="notification-list">
+                        {notifications.length === 0 ? (
+                          <div className="notification-empty">Chưa có thông báo</div>
+                        ) : (
+                          notifications.map((notification) => (
+                            <button
+                              key={notification.id}
+                              type="button"
+                              className={`notification-item${notification.is_read ? '' : ' unread'}`}
+                              onClick={() => handleNotificationClick(notification)}
+                            >
+                              <span className="notification-title">{notification.title}</span>
+                              <span className="notification-body">{notification.body}</span>
+                              <span className="notification-time">{formatNotificationTime(notification.created_at)}</span>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </li>
 
                 <li className="nav-item account-menu" ref={accountRef}>
                   <button

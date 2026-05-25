@@ -6,6 +6,10 @@ const profileService = {
     // BE returns { message, profile }
     return response.data.profile ?? response.data;
   },
+  getPublicProfile: async (id) => {
+    const response = await api.get(`/profile/users/${id}`);
+    return response.data.profile ?? response.data;
+  },
   updateProfile: async (data) => {
     const response = await api.put('/profile/edit-profile', data);
     // BE returns { message, profile }
@@ -21,4 +25,4 @@ const profileService = {
   },
 };
 
-export default profileService;
+export default profileService;
