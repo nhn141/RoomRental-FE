@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useRentalPosts } from '../../hooks/useRentalPosts';
 import { useAuth } from '../../context/AuthContext';
+import RentalAuthorMenu from './RentalAuthorMenu';
 import './RentalPost.css';
 
 const RentalPostDetailView = () => {
@@ -116,6 +117,7 @@ const RentalPostDetailView = () => {
 
           <div className="contact-section">
             <label>Thông Tin Chủ Nhà:</label>
+            <RentalAuthorMenu post={currentPost} />
             <p><strong>Tên:</strong> {currentPost.landlord_name}</p>
             {currentPost.landlord_phone && (
               <p><strong>Điện Thoại:</strong> {currentPost.landlord_phone}</p>

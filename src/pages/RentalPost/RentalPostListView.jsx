@@ -3,6 +3,7 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useRentalPosts } from '../../hooks/useRentalPosts';
 import { useLocation } from '../../hooks/useLocation';
+import RentalAuthorMenu from './RentalAuthorMenu';
 import './RentalPost.css';
 
 const RentalPostListView = () => {
@@ -248,6 +249,7 @@ const RentalPostListView = () => {
               </div>
 
               <div className="post-body">
+                <RentalAuthorMenu post={post} compact />
                 <p className="price">
                   <strong>Giá:</strong> {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(post.price)}
                 </p>
