@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useRentalPosts } from '../../hooks/useRentalPosts';
 import { useLocation } from '../../hooks/useLocation';
-import { useAuth } from '../../context/AuthContext';
 import './RentalPost.css';
 
 const CreateRentalPostView = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { createPost, loading, error } = useRentalPosts();
   const [formData, setFormData] = useState({
     title: '',
@@ -107,15 +105,6 @@ const CreateRentalPostView = () => {
 
   return (
     <div className="rental-container">
-      <div className="page-header">
-        <button 
-          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
       <div className="form-header">
         <h1>Tạo Bài Đăng Cho Thuê</h1>
         <div className="form-header-links">
@@ -301,10 +290,10 @@ const CreateRentalPostView = () => {
 
         <div className="form-actions">
           <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? 'Đang tạo...' : 'Tạo Bài Đăng'}
+            {loading ? 'Đang tạo...' : 'Tạo bài đăng'}
           </button>
           <Link to="/my-rental-posts" className="cancel-btn">
-            Quay Lại
+            Quay lại
           </Link>
         </div>
       </form>

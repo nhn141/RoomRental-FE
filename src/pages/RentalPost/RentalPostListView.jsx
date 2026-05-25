@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useRentalPosts } from '../../hooks/useRentalPosts';
 import { useLocation } from '../../hooks/useLocation';
@@ -10,8 +10,11 @@ const RentalPostListView = () => {
   const { posts, loading, error, fetchAllPosts, deletePost, approvePost, rejectPost } = useRentalPosts();
   const { provinces } = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const statusParam = searchParams.get('status');
+  const urlStatusFilter = ['pending', 'approved', 'rejected'].includes(statusParam) ? statusParam : 'all';
   
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState(urlStatusFilter);
   const [filters, setFilters] = useState({
     status: '',
     province_code: '',
@@ -21,10 +24,6 @@ const RentalPostListView = () => {
     max_area: '',
   });
   const [showFilters, setShowFilters] = useState(false);
-
-  useEffect(() => {
-    applyFilters();
-  }, [filter]);
 
   const applyFilters = () => {
     const params = {};
@@ -41,6 +40,14 @@ const RentalPostListView = () => {
     
     fetchAllPosts(params);
   };
+
+  useEffect(() => {
+    applyFilters();
+  }, [filter]);
+
+  useEffect(() => {
+    setFilter(urlStatusFilter);
+  }, [urlStatusFilter]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -77,22 +84,14 @@ const RentalPostListView = () => {
 
   return (
     <div className="rental-container">
-      <div className="page-header">
-        <button 
-          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
+
       <div className="posts-header">
         <h1>Danh Sách Bài Đăng Cho Thuê</h1>
         <div className="posts-header-nav">
           {user?.role === 'landlord' && (
             <>
               <Link to="/rental-posts/create" className="create-post-btn">
-                + Tạo Bài Đăng
+                + Tạo bài đăng
               </Link>
               <Link to="/my-rental-posts" className="header-link">
                 Bài Đăng Của Tôi
@@ -111,7 +110,7 @@ const RentalPostListView = () => {
             className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
             onClick={() => setFilter('all')}
           >
-            Tất Cả
+            Tất cả
           </button>
           <button
             className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
@@ -135,55 +134,25 @@ const RentalPostListView = () => {
       )}
 
       {/* Advanced Filters */}
-      <div style={{ marginBottom: '20px' }}>
+      <div>
         <button
           onClick={() => setShowFilters(!showFilters)}
-          style={{
-            background: '#667eea',
-            color: 'white',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '6px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            fontSize: '0.95em'
-          }}
+          className="filter-toggle-btn"
         >
           {showFilters ? '▼' : '▶'} {showFilters ? 'Ẩn' : 'Hiển Thị'} Bộ Lọc Nâng Cao
         </button>
       </div>
 
       {showFilters && (
-        <div style={{
-          background: '#f9f9f9',
-          border: '1px solid #e0e0e0',
-          borderRadius: '8px',
-          padding: '20px',
-          marginBottom: '20px'
-        }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '16px',
-            marginBottom: '16px'
-          }}>
+        <div className="filter-advanced-panel">
+          <div className="filter-grid">
             {/* Tỉnh/Thành Phố */}
-            <div>
-              <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', fontSize: '0.9em', color: '#333' }}>
-                Tỉnh/Thành Phố
-              </label>
+            <div className="filter-field">
+              <label>Tỉnh/Thành Phố</label>
               <select
                 name="province_code"
                 value={filters.province_code}
                 onChange={handleFilterChange}
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  border: '1px solid #ddd',
-                  borderRadius: '6px',
-                  fontFamily: 'inherit',
-                  boxSizing: 'border-box'
-                }}
               >
                 <option value="">-- Tất cả --</option>
                 {provinces.map(province => (
@@ -195,126 +164,65 @@ const RentalPostListView = () => {
             </div>
 
             {/* Giá tối thiểu */}
-            <div>
-              <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', fontSize: '0.9em', color: '#333' }}>
-                Giá tối thiểu (VNĐ)
-              </label>
+            <div className="filter-field">
+              <label>Giá tối thiểu (VNĐ)</label>
               <input
                 type="number"
                 name="min_price"
                 value={filters.min_price}
                 onChange={handleFilterChange}
                 placeholder="VD: 1000000"
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  border: '1px solid #ddd',
-                  borderRadius: '6px',
-                  fontFamily: 'inherit',
-                  boxSizing: 'border-box'
-                }}
               />
             </div>
 
             {/* Giá tối đa */}
-            <div>
-              <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', fontSize: '0.9em', color: '#333' }}>
-                Giá tối đa (VNĐ)
-              </label>
+            <div className="filter-field">
+              <label>Giá tối đa (VNĐ)</label>
               <input
                 type="number"
                 name="max_price"
                 value={filters.max_price}
                 onChange={handleFilterChange}
                 placeholder="VD: 10000000"
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  border: '1px solid #ddd',
-                  borderRadius: '6px',
-                  fontFamily: 'inherit',
-                  boxSizing: 'border-box'
-                }}
               />
             </div>
 
             {/* Diện tích tối thiểu */}
-            <div>
-              <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', fontSize: '0.9em', color: '#333' }}>
-                Diện tích tối thiểu (m²)
-              </label>
+            <div className="filter-field">
+              <label>Diện tích tối thiểu (m²)</label>
               <input
                 type="number"
                 name="min_area"
                 value={filters.min_area}
                 onChange={handleFilterChange}
                 placeholder="VD: 20"
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  border: '1px solid #ddd',
-                  borderRadius: '6px',
-                  fontFamily: 'inherit',
-                  boxSizing: 'border-box'
-                }}
               />
             </div>
 
             {/* Diện tích tối đa */}
-            <div>
-              <label style={{ display: 'block', marginBottom: '6px', fontWeight: '600', fontSize: '0.9em', color: '#333' }}>
-                Diện tích tối đa (m²)
-              </label>
+            <div className="filter-field">
+              <label>Diện tích tối đa (m²)</label>
               <input
                 type="number"
                 name="max_area"
                 value={filters.max_area}
                 onChange={handleFilterChange}
                 placeholder="VD: 100"
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  border: '1px solid #ddd',
-                  borderRadius: '6px',
-                  fontFamily: 'inherit',
-                  boxSizing: 'border-box'
-                }}
               />
             </div>
           </div>
 
           {/* Buttons */}
-          <div style={{ display: 'flex', gap: '12px' }}>
+          <div className="filter-actions">
             <button
               onClick={handleApplyFilters}
-              style={{
-                flex: 1,
-                padding: '10px',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
-              onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+              className="btn-filter"
             >
               🔍 Lọc
             </button>
             <button
               onClick={handleResetFilters}
-              style={{
-                flex: 1,
-                padding: '10px',
-                background: '#e0e0e0',
-                color: '#333',
-                border: 'none',
-                borderRadius: '6px',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}
+              className="btn-reset"
             >
               ↻ Đặt Lại
             </button>
@@ -353,7 +261,7 @@ const RentalPostListView = () => {
                   onClick={() => navigate(`/rental-posts/${post.id}`)}
                   className="view-btn"
                 >
-                  Xem Chi Tiết
+                  Xem chi tiết
                 </button>
 
                 {user?.role === 'admin' && post.status === 'pending' && (
@@ -393,7 +301,7 @@ const RentalPostListView = () => {
                 {user?.role === 'landlord' && post.user_id === user?.id && (
                   <div className="landlord-actions">
                     <button
-                      onClick={() => navigate(`/rental-posts/edit/${post.id}`)}
+                      onClick={() => navigate(`/rental-posts/${post.id}/edit`)}
                       className="edit-btn"
                     >
                       Sửa

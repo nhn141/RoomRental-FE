@@ -59,6 +59,17 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
   };
 
+  // Cho phép cập nhật thông tin user (vd: avatar_url sau khi upload)
+  const updateUser = (updatedFields) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const newUser = { ...prev, ...updatedFields };
+      // Đồng bộ vào localStorage
+      localStorage.setItem('user', JSON.stringify(newUser));
+      return newUser;
+    });
+  };
+
   const value = {
     user,
     token,
@@ -67,6 +78,7 @@ export const AuthProvider = ({ children }) => {
     registerTenant,
     registerLandlord,
     logout,
+    updateUser,
     isAuthenticated: !!token,
   };
 

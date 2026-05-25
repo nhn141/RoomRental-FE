@@ -260,3 +260,36 @@
     flex-direction: column;
   }
 }
+
+/* Keep admin form actions aligned and preserve natural casing. */
+.admin-form .form-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+}
+
+.admin-form .submit-btn,
+.admin-form .cancel-btn {
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  min-height: 48px;
+  margin: 0;
+  padding: 0 1.25rem;
+  border-radius: var(--radius-md);
+  box-sizing: border-box;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: none;
+}
+
+@media (max-width: 600px) {
+  .admin-form .form-actions {
+    grid-template-columns: 1fr;
+  }
+}

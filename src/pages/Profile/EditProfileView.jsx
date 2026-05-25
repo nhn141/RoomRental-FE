@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useProfile } from '../../hooks/useProfile';
@@ -26,8 +26,12 @@ const EditProfileView = () => {
   const [errors, setErrors] = useState({});
   const [provinceNameDisplay, setProvinceNameDisplay] = useState('');
   const [wardNameDisplay, setWardNameDisplay] = useState('');
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [avatarSuccess, setAvatarSuccess] = useState('');
+  const [avatarError, setAvatarError] = useState('');
+  const avatarInputRef = useRef(null);
   const { user } = useAuth();
-  const { profile, loading: fetchLoading, fetchProfile, updateProfile, loading: updateLoading, error: updateError } = useProfile();
+  const { profile, loading: fetchLoading, fetchProfile, updateProfile, loading: updateLoading, error: updateError, uploadAvatar, uploadingAvatar } = useProfile();
   const { provinces, wards, loadingProvinces, loadingWards, fetchWards } = useLocation();
   const navigate = useNavigate();
 
@@ -63,6 +67,27 @@ const EditProfileView = () => {
       }
     }
   }, [profile, fetchWards]);
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Preview ngay lập tức
+    const previewUrl = URL.createObjectURL(file);
+    setAvatarPreview(previewUrl);
+    setAvatarError('');
+    setAvatarSuccess('');
+
+    // Upload lên Cloudinary
+    try {
+      await uploadAvatar(file);
+      setAvatarSuccess('Cập nhật ảnh đại diện thành công!');
+      setTimeout(() => setAvatarSuccess(''), 3000);
+    } catch (err) {
+      setAvatarError(err.message || 'Upload thất bại');
+      setAvatarPreview(null);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -136,17 +161,52 @@ const EditProfileView = () => {
 
   return (
     <div className="profile-container">
-      <div className="profile-header">
-        <button 
-          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
       <div className="edit-profile-card">
         <h2>Chỉnh Sửa Profile</h2>
+
+        {/* === AVATAR UPLOAD SECTION === */}
+        <div className="avatar-upload-section">
+          <div
+            className="avatar-upload-wrapper"
+            onClick={() => !uploadingAvatar && avatarInputRef.current?.click()}
+            title="Nhấn để đổi ảnh đại diện"
+          >
+            {uploadingAvatar ? (
+              <div className="avatar-placeholder avatar-loading-state">
+                <div className="avatar-spinner"></div>
+              </div>
+            ) : avatarPreview || profile?.avatar_url ? (
+              <img
+                src={avatarPreview || profile.avatar_url}
+                alt="Ảnh đại diện"
+                className="avatar-img"
+              />
+            ) : (
+              <div className="avatar-placeholder">
+                {profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : '?'}
+              </div>
+            )}
+            {!uploadingAvatar && (
+              <div className="avatar-overlay">
+                <span className="avatar-overlay-icon">📷</span>
+                <span className="avatar-overlay-text">Đổi ảnh</span>
+              </div>
+            )}
+          </div>
+          <input
+            ref={avatarInputRef}
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            onChange={handleAvatarChange}
+            style={{ display: 'none' }}
+          />
+          <div className="avatar-upload-meta">
+            <p className="avatar-upload-hint">Nhấn vào ảnh để thay đổi</p>
+            <p className="avatar-upload-hint">JPEG, PNG, WebP · Tối đa 5MB</p>
+            {avatarSuccess && <p className="avatar-upload-success">{avatarSuccess}</p>}
+            {avatarError && <p className="avatar-upload-error">{avatarError}</p>}
+          </div>
+        </div>
 
         {updateError && <div className="error-message">{updateError}</div>}
 
@@ -366,7 +426,7 @@ const EditProfileView = () => {
 
           <div className="form-actions">
             <button type="submit" disabled={updateLoading} className="submit-btn">
-              {updateLoading ? 'Đang cập nhật...' : 'Cập Nhật'}
+              {updateLoading ? 'Đang cập nhật...' : 'Cập nhật'}
             </button>
             <button type="button" onClick={() => navigate('/profile')} className="cancel-btn">
               Hủy

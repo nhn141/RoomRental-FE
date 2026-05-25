@@ -1,5 +1,5 @@
 .dashboard-container {
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - 56px);
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 0;
 }
@@ -23,14 +23,18 @@
 }
 
 .welcome-card {
-  background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%);
-  padding: var(--spacing-2xl) var(--spacing-2xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  background: var(--white);
+  padding: var(--spacing-md) var(--spacing-lg);
   border-radius: var(--radius-xl);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  margin-bottom: var(--spacing-2xl);
-  border: none;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-lg);
+  border: 1px solid var(--gray-200);
+  border-left: 4px solid var(--primary-color);
   position: relative;
-  overflow: hidden;
 }
 
 .welcome-card::before {
@@ -64,7 +68,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   line-height: 1.2;
 }
 
@@ -110,7 +114,7 @@
   padding-bottom: var(--spacing-lg);
   border-bottom: 3px solid var(--gray-100);
   position: relative;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 .role-specific-content h3::after {
@@ -193,7 +197,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 .card p {
@@ -320,5 +324,104 @@
 
   .card {
     padding: var(--spacing-lg);
+  }
+}
+
+/* Compact dashboard greeting */
+.welcome-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  background: var(--white);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-lg);
+  border: 1px solid var(--gray-200);
+  border-left: 4px solid var(--primary-color);
+  overflow: visible;
+}
+
+.welcome-card::before,
+.welcome-card::after {
+  content: none;
+  display: none;
+}
+
+.welcome-text {
+  min-width: 0;
+}
+
+.welcome-label {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: var(--gray-500);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.welcome-card h2 {
+  margin: 0;
+  color: var(--gray-900);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+
+.welcome-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.role-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.85rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  background: var(--info-light);
+  color: var(--primary-dark);
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.welcome-email {
+  color: var(--gray-500);
+  font-size: 0.9rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+  .welcome-card {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+  }
+
+  .welcome-card h2 {
+    font-size: 1.1rem;
+    white-space: normal;
+  }
+
+  .welcome-meta {
+    justify-content: flex-start;
   }
 }

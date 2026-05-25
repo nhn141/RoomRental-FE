@@ -41,16 +41,6 @@ const AllContractsView = () => {
 
   return (
     <div className="rental-container">
-      <div className="page-header">
-        <button 
-          onClick={() => navigate('/admin')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
-
       <div className="posts-header">
         <h1>📋 Danh Sách Tất Cả Hợp Đồng</h1>
         <div className="posts-header-nav">
@@ -65,7 +55,7 @@ const AllContractsView = () => {
           className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
           onClick={() => setFilter('all')}
         >
-          Tất Cả ({contracts.length})
+          Tất cả ({contracts.length})
         </button>
         <button
           className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
@@ -108,7 +98,7 @@ const AllContractsView = () => {
             overflow: 'hidden'
           }}>
             <thead>
-              <tr style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+              <tr style={{ background: 'var(--primary-gradient)', color: 'white' }}>
                 <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', borderBottom: '2px solid #e0e0e0' }}>ID</th>
                 <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', borderBottom: '2px solid #e0e0e0' }}>Bài Đăng</th>
                 <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', borderBottom: '2px solid #e0e0e0' }}>Người Thuê</th>
@@ -130,7 +120,7 @@ const AllContractsView = () => {
                 >
                   <td style={{ padding: '16px', color: '#666' }}>{c.id}</td>
                   <td style={{ padding: '16px', color: '#333', fontWeight: '500' }}>
-                    <Link to={`/rental-posts/${c.post_id}`} style={{ color: '#667eea', textDecoration: 'none' }}>
+                    <Link to={`/rental-posts/${c.post_id}`} style={{ color: 'var(--primary-color)', textDecoration: 'none' }}>
                       {c.post_title}
                     </Link>
                   </td>
@@ -146,7 +136,7 @@ const AllContractsView = () => {
                       <div style={{ fontSize: '0.85em', color: '#999' }}>{c.landlord_email}</div>
                     </div>
                   </td>
-                  <td style={{ padding: '16px', color: '#667eea', fontWeight: '600' }}>
+                  <td style={{ padding: '16px', color: 'var(--primary-color)', fontWeight: '600' }}>
                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(c.monthly_rent)}
                   </td>
                   <td style={{ padding: '16px', color: '#666', fontSize: '0.9em' }}>

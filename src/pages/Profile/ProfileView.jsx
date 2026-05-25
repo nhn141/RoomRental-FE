@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
-import { useProfile } from '../../hooks/useProfile';
-import { useNavigate, Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useProfile } from '../../hooks/useProfile';
 import './Profile.css';
 
 const ProfileView = () => {
   const { profile, loading, error, fetchProfile } = useProfile();
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,6 +16,16 @@ const ProfileView = () => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const getRoleDisplay = (role) => {
+    const roleMap = {
+      tenant: 'Người thuê',
+      landlord: 'Chủ nhà',
+      admin: 'Quản trị viên',
+    };
+
+    return roleMap[role] || role;
   };
 
   if (loading) {
@@ -32,17 +42,29 @@ const ProfileView = () => {
 
   return (
     <div className="profile-container">
-      <div className="profile-header">
-        <button 
-          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
       <div className="profile-card">
-        <h2>Thông Tin Cá Nhân</h2>
+        <h2>Thông tin cá nhân</h2>
+
+        <div className="avatar-section">
+          <div className="avatar-display">
+            {profile.avatar_url ? (
+              <img
+                src={profile.avatar_url}
+                alt="Ảnh đại diện"
+                className="avatar-img"
+              />
+            ) : (
+              <div className="avatar-placeholder">
+                {profile.full_name ? profile.full_name.charAt(0).toUpperCase() : '?'}
+              </div>
+            )}
+          </div>
+          <div className="avatar-info">
+            <p className="avatar-name">{profile.full_name}</p>
+            <span className="role-badge">{getRoleDisplay(profile.role)}</span>
+          </div>
+        </div>
+
         <div className="profile-content">
           <div className="profile-row">
             <label>Tên:</label>
@@ -53,36 +75,34 @@ const ProfileView = () => {
             <span>{profile.email}</span>
           </div>
           <div className="profile-row">
-            <label>Vai Trò:</label>
-            <span className="role-badge">{profile.role}</span>
+            <label>Vai trò:</label>
+            <span className="role-badge">{getRoleDisplay(profile.role)}</span>
           </div>
+
           {profile.phone_number && (
             <div className="profile-row">
-              <label>Số Điện Thoại:</label>
+              <label>Số điện thoại:</label>
               <span>{profile.phone_number}</span>
             </div>
           )}
-          
-          {/* Tenant specific fields */}
+
           {profile.role === 'tenant' && (
             <>
               {profile.gender && (
                 <div className="profile-row">
-                  <label>Giới Tính:</label>
-                  <span>
-                    {profile.gender === 'male' ? 'Nam' : profile.gender === 'female' ? 'Nữ' : 'Khác'}
-                  </span>
+                  <label>Giới tính:</label>
+                  <span>{profile.gender === 'male' ? 'Nam' : profile.gender === 'female' ? 'Nữ' : 'Khác'}</span>
                 </div>
               )}
               {profile.dob && (
                 <div className="profile-row">
-                  <label>Ngày Sinh:</label>
+                  <label>Ngày sinh:</label>
                   <span>{new Date(profile.dob).toLocaleDateString('vi-VN')}</span>
                 </div>
               )}
               {profile.target_province_name && (
                 <div className="profile-row">
-                  <label>Tỉnh/Thành Phố đang tìm phòng:</label>
+                  <label>Tỉnh/Thành phố đang tìm phòng:</label>
                   <span>{profile.target_province_name}</span>
                 </div>
               )}
@@ -94,7 +114,7 @@ const ProfileView = () => {
               )}
               {profile.budget_min && (
                 <div className="profile-row">
-                  <label>Ngân Sách:</label>
+                  <label>Ngân sách:</label>
                   <span>
                     {profile.budget_min.toLocaleString('vi-VN')} - {profile.budget_max.toLocaleString('vi-VN')} VND
                   </span>
@@ -102,27 +122,24 @@ const ProfileView = () => {
               )}
               {profile.bio && (
                 <div className="profile-row">
-                  <label>Giới Thiệu:</label>
+                  <label>Giới thiệu:</label>
                   <span>{profile.bio}</span>
                 </div>
               )}
             </>
           )}
 
-          {/* Landlord specific fields */}
           {profile.role === 'landlord' && (
             <>
               {profile.gender && (
                 <div className="profile-row">
-                  <label>Giới Tính:</label>
-                  <span>
-                    {profile.gender === 'male' ? 'Nam' : profile.gender === 'female' ? 'Nữ' : 'Khác'}
-                  </span>
+                  <label>Giới tính:</label>
+                  <span>{profile.gender === 'male' ? 'Nam' : profile.gender === 'female' ? 'Nữ' : 'Khác'}</span>
                 </div>
               )}
               {profile.dob && (
                 <div className="profile-row">
-                  <label>Ngày Sinh:</label>
+                  <label>Ngày sinh:</label>
                   <span>{new Date(profile.dob).toLocaleDateString('vi-VN')}</span>
                 </div>
               )}
@@ -134,46 +151,39 @@ const ProfileView = () => {
               )}
               {profile.address_detail && (
                 <div className="profile-row">
-                  <label>Địa Chỉ:</label>
+                  <label>Địa chỉ:</label>
                   <span>{profile.address_detail}</span>
                 </div>
               )}
               {profile.reputation_score !== undefined && (
                 <div className="profile-row">
-                  <label>Điểm Uy Tín:</label>
+                  <label>Điểm uy tín:</label>
                   <span>{profile.reputation_score.toFixed(1)} ⭐</span>
                 </div>
               )}
               {profile.bio && (
                 <div className="profile-row">
-                  <label>Giới Thiệu:</label>
+                  <label>Giới thiệu:</label>
                   <span>{profile.bio}</span>
                 </div>
               )}
             </>
           )}
 
-          {/* Admin specific fields */}
-          {profile.role === 'admin' && (
-            <>
-              {profile.department && (
-                <div className="profile-row">
-                  <label>Phòng Ban:</label>
-                  <span>{profile.department}</span>
-                </div>
-              )}
-            </>
+          {profile.role === 'admin' && profile.department && (
+            <div className="profile-row">
+              <label>Phòng ban:</label>
+              <span>{profile.department}</span>
+            </div>
           )}
         </div>
+
         <div className="profile-actions">
-          <a href="/profile/edit" className="edit-btn">
-            ✏️ Chỉnh sửa hồ sơ
-          </a>
-          <button 
-            onClick={handleLogout}
-            className="logout-btn"
-          >
-            🚪 Đăng Xuất
+          <Link to="/profile/edit" className="edit-btn">
+            Chỉnh sửa hồ sơ
+          </Link>
+          <button onClick={handleLogout} className="logout-btn">
+            Đăng xuất
           </button>
         </div>
       </div>

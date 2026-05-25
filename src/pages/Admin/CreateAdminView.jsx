@@ -65,15 +65,6 @@ const CreateAdminView = () => {
 
   return (
     <div className="admin-container">
-      <div className="page-header">
-        <button 
-          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
       <div className="admin-card">
         <h2>Tạo Tài Khoản Admin</h2>
 
@@ -158,7 +149,7 @@ const CreateAdminView = () => {
 
           <div className="form-actions">
             <button type="submit" disabled={loading} className="submit-btn">
-              {loading ? 'Đang tạo...' : 'Tạo Admin'}
+              {loading ? 'Đang tạo...' : 'Tạo admin'}
             </button>
             <button type="button" onClick={() => navigate('/admin')} className="cancel-btn">
               Hủy

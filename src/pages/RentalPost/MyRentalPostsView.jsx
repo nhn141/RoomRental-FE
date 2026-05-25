@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useRentalPosts } from '../../hooks/useRentalPosts';
-import { useAuth } from '../../context/AuthContext';
 import '../RentalPost/RentalPost.css';
 
 const MyRentalPostsView = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const {
     myPosts,
@@ -48,15 +46,6 @@ const MyRentalPostsView = () => {
   if (loading) {
     return (
       <div className="rental-container">
-        <div className="page-header">
-          <button 
-            onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-            className="home-btn"
-            title="Về Dashboard"
-          >
-            🏠
-          </button>
-        </div>
         <h1>Bài Đăng Của Tôi</h1>
         <p>Đang tải...</p>
       </div>
@@ -74,23 +63,14 @@ const MyRentalPostsView = () => {
 
   return (
     <div className="rental-container">
-      <div className="page-header">
-        <button 
-          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
       <div className="posts-header">
         <h1>Bài Đăng Của Tôi</h1>
         <div className="posts-header-nav">
           <Link to="/rental-posts/create" className="create-post-btn">
-            + Tạo Bài Đăng
+            + Tạo bài đăng
           </Link>
           <Link to="/rental-posts" className="header-link">
-            Tất Cả Bài Đăng
+            Tất cả bài đăng
           </Link>
           <Link to="/landlord" className="header-link">
             Dashboard
@@ -167,7 +147,7 @@ const MyRentalPostsView = () => {
                     className="action-btn edit-btn"
                     onClick={() => handleEdit(post.id)}
                   >
-                    Chỉnh Sửa
+                    Chỉnh sửa
                   </button>
                 )}
                 <button
@@ -180,7 +160,7 @@ const MyRentalPostsView = () => {
                   to={`/rental-posts/${post.id}`}
                   className="action-btn view-btn"
                 >
-                  Xem Chi Tiết
+                  Xem chi tiết
                 </Link>
               </div>
             </div>

@@ -41,7 +41,7 @@ const CreateContractView = () => {
           ...prev,
           monthly_rent: data.post.price || ''
         }));
-      } catch (err) {
+      } catch {
         setValidationError('Không thể tải thông tin bài đăng');
       } finally {
         setFetchingPost(false);
@@ -125,18 +125,9 @@ const CreateContractView = () => {
 
   return (
     <div className="rental-container">
-      <div className="page-header">
-        <button 
-          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
       <div style={{ maxWidth: '600px', margin: '0 auto' }}>
         <div style={{ background: 'white', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
-          <div style={{ padding: '20px', borderBottom: '1px solid #e0e0e0', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+          <div style={{ padding: '20px', borderBottom: '1px solid #e0e0e0', background: 'var(--primary-gradient)', color: 'white' }}>
             <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>📋 Tạo Hợp Đồng Thuê Phòng</h2>
           </div>
           <div style={{ padding: '30px' }}>
@@ -313,7 +304,7 @@ const CreateContractView = () => {
                   style={{
                     flex: 1,
                     padding: '12px',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    background: 'var(--primary-gradient)',
                     color: 'white',
                     border: 'none',
                     borderRadius: '6px',
@@ -326,7 +317,7 @@ const CreateContractView = () => {
                   onMouseEnter={(e) => !loading && (e.target.style.transform = 'translateY(-2px)')}
                   onMouseLeave={(e) => (e.target.style.transform = 'translateY(0)')}
                 >
-                  {loading ? '⏳ Đang tạo...' : '✅ Tạo Hợp Đồng'}
+                  {loading ? '⏳ Đang tạo...' : '✅ Tạo hợp đồng'}
                 </button>
                 <button
                   type="button"
@@ -345,7 +336,7 @@ const CreateContractView = () => {
                   onMouseEnter={(e) => (e.target.style.background = '#d0d0d0')}
                   onMouseLeave={(e) => (e.target.style.background = '#e0e0e0')}
                 >
-                  ← Quay Lại
+                  ← Quay lại
                 </button>
               </div>
             </form>

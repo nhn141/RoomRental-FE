@@ -30,18 +30,9 @@ const RentalPostDetailView = () => {
 
   return (
     <div className="rental-container">
-      <div className="page-header">
-        <button 
-          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
       <div className="detail-header-nav">
         <button onClick={() => navigate(-1)} className="back-btn">
-          ← Quay Lại
+          ← Quay lại
         </button>
         <div className="detail-nav-links">
           <Link to="/rental-posts" className="header-link">
@@ -159,11 +150,11 @@ const RentalPostDetailView = () => {
               onClick={() => navigate(`/contracts/create?post_id=${currentPost.id}`)}
               className="create-contract-btn"
             >
-              📋 Tạo Hợp Đồng
+              📋 Tạo hợp đồng
             </button>
           )}
           <button onClick={() => navigate(-1)} className="cancel-btn">
-            Quay Lại
+            Quay lại
           </button>
         </div>
       </div>

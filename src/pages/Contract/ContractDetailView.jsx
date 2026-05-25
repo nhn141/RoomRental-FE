@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useContracts } from '../../hooks/useContracts';
@@ -9,25 +9,23 @@ const ContractDetailView = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { currentContract, fetchContractById, loading, error, terminateContract, deleteContract } = useContracts();
-  const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState(null);
 
   useEffect(() => {
     fetchContractById(id);
   }, [id, fetchContractById]);
 
-  useEffect(() => {
-    if (currentContract) {
-      setEditData(currentContract);
-    }
-  }, [currentContract]);
+  const getReturnPath = () => {
+    if (user?.role === 'landlord') return '/contracts/landlord';
+    if (user?.role === 'admin') return '/admin/contracts';
+    return '/contracts/my';
+  };
 
   const handleTerminate = async () => {
     if (window.confirm('Bạn chắc chắn muốn kết thúc hợp đồng này?')) {
       try {
         await terminateContract(id);
         alert('Kết thúc hợp đồng thành công');
-        navigate('/contracts/my');
+        navigate(getReturnPath());
       } catch (err) {
         alert('Lỗi: ' + (err.response?.data?.message || err.message));
       }
@@ -39,18 +37,12 @@ const ContractDetailView = () => {
       try {
         await deleteContract(id);
         alert('Xóa hợp đồng thành công');
-        navigate('/contracts/my');
+        navigate(getReturnPath());
       } catch (err) {
         alert('Lỗi: ' + (err.response?.data?.message || err.message));
       }
     }
   };
-
-  const canEdit = user && (
-    user.id === currentContract?.tenant_id || 
-    user.id === currentContract?.landlord_id || 
-    user.role === 'admin'
-  );
 
   const canTerminate = user && (
     user.id === currentContract?.landlord_id || 
@@ -74,7 +66,7 @@ const ContractDetailView = () => {
           {error || 'Không thể tải chi tiết hợp đồng'}
         </div>
         <button className="btn btn-secondary" onClick={() => navigate(-1)}>
-          Quay Lại
+          Quay lại
         </button>
       </div>
     );
@@ -82,19 +74,10 @@ const ContractDetailView = () => {
 
   return (
     <div className="rental-container">
-      <div className="page-header">
-        <button 
-          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Chi Tiết Hợp Đồng</h2>
         <button className="btn btn-secondary" onClick={() => navigate(-1)}>
-          Quay Lại
+          Quay lại
         </button>
       </div>
 
@@ -238,7 +221,7 @@ const ContractDetailView = () => {
                   </div>
                 )}
 
-                {!canTerminate && !user?.id === currentContract?.tenant_id && (
+                {!canTerminate && user?.id !== currentContract?.tenant_id && (
                   <div className="alert alert-info">
                     ℹ️ Bạn không có quyền chỉnh sửa hợp đồng này
                   </div>

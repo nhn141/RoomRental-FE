@@ -66,21 +66,11 @@ const AdminUserDetailView = () => {
 
   return (
     <div className="rental-container">
-      <div className="page-header">
-        <button 
-          onClick={() => navigate('/admin')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
-
       <div className="posts-header">
         <h1>👤 Chi Tiết Hồ Sơ Người Dùng</h1>
         <div className="posts-header-nav">
           <Link to="/admin/users" className="header-link">
-            ← Quay Lại
+            ← Quay lại
           </Link>
           <Link to="/admin" className="header-link">
             Dashboard
@@ -91,7 +81,7 @@ const AdminUserDetailView = () => {
       <div style={{ maxWidth: '800px', margin: '0 auto' }}>
         <div style={{ background: 'white', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
           {/* Header */}
-          <div style={{ padding: '24px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+          <div style={{ padding: '24px', background: 'var(--primary-gradient)', color: 'white' }}>
             <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>{userData.full_name}</h2>
             <p style={{ margin: '8px 0 0 0', opacity: 0.9 }}>{userData.email}</p>
           </div>
@@ -217,7 +207,7 @@ const AdminUserDetailView = () => {
                       {userData.profile.reputation_score !== undefined && (
                         <div>
                           <label style={{ display: 'block', fontSize: '0.85em', color: '#666', marginBottom: '4px', fontWeight: '500' }}>Điểm Uy Tín:</label>
-                          <p style={{ margin: 0, color: '#667eea', fontWeight: '600' }}>{userData.profile.reputation_score.toFixed(1)} ⭐</p>
+                          <p style={{ margin: 0, color: 'var(--primary-color)', fontWeight: '600' }}>{userData.profile.reputation_score.toFixed(1)} ⭐</p>
                         </div>
                       )}
                       {userData.profile.bio && (
@@ -266,7 +256,7 @@ const AdminUserDetailView = () => {
                       {userData.profile.budget_min && (
                         <div style={{ gridColumn: '1 / -1' }}>
                           <label style={{ display: 'block', fontSize: '0.85em', color: '#666', marginBottom: '4px', fontWeight: '500' }}>Ngân Sách Tìm Kiếm:</label>
-                          <p style={{ margin: 0, color: '#667eea', fontWeight: '600' }}>
+                          <p style={{ margin: 0, color: 'var(--primary-color)', fontWeight: '600' }}>
                             {userData.profile.budget_min.toLocaleString('vi-VN')} - {userData.profile.budget_max.toLocaleString('vi-VN')} VND
                           </p>
                         </div>
@@ -301,7 +291,7 @@ const AdminUserDetailView = () => {
                   transition: 'all 0.3s ease'
                 }}
               >
-                ← Quay Lại
+                ← Quay lại
               </Link>
             </div>
           </div>

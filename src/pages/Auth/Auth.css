@@ -238,7 +238,7 @@
   transition: all 0.3s ease;
   margin-top: var(--spacing-md);
   letter-spacing: 0.02em;
-  text-transform: uppercase;
+  text-transform: none;
   font-size: 0.875rem;
 }
 

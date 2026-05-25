@@ -85,7 +85,7 @@ const RecommendedRoomsView = () => {
                   onClick={() => navigate(`/rental-posts/${post.id}`)}
                   className="view-btn"
                 >
-                  Xem Chi Tiết
+                  Xem chi tiết
                 </button>
               </div>
             </div>

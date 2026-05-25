@@ -172,15 +172,6 @@ const EditRentalPostView = () => {
 
   return (
     <div className="rental-container">
-      <div className="page-header">
-        <button 
-          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
       <div className="form-header">
         <h1>Chỉnh Sửa Bài Đăng</h1>
         <div className="form-header-links">
@@ -364,7 +355,7 @@ const EditRentalPostView = () => {
 
         <div className="form-actions">
           <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? 'Đang cập nhật...' : 'Cập Nhật Bài Đăng'}
+            {loading ? 'Đang cập nhật...' : 'Cập nhật bài đăng'}
           </button>
           <Link to="/my-rental-posts" className="cancel-btn">
             Hủy

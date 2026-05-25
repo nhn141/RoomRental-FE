@@ -5,9 +5,12 @@ const MainLayout = () => {
   return (
     <>
       <Header />
-      <Outlet />
+      <div className="page-content">
+        <Outlet />
+      </div>
     </>
   );
 };
 
 export default MainLayout;
+

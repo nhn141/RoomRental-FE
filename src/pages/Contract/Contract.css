@@ -310,7 +310,7 @@
   margin: 0;
   color: var(--white);
   font-weight: 800;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 .card-body {
@@ -392,6 +392,15 @@
   box-shadow: var(--shadow-lg);
 }
 
+.btn-secondary {
+  background: var(--gray-600);
+  color: var(--white);
+}
+
+.btn-secondary:hover {
+  background: var(--gray-700);
+}
+
 .btn-outline-primary {
   background: transparent;
   border: 2px solid var(--primary-color);
@@ -402,6 +411,34 @@
   background: var(--primary-gradient);
   color: var(--white);
   border-color: transparent;
+}
+
+.btn-outline-success {
+  background: transparent;
+  border: 2px solid var(--success);
+  color: var(--success);
+}
+
+.btn-outline-success:hover {
+  background: var(--success);
+  color: var(--white);
+}
+
+.btn-outline-danger {
+  background: transparent;
+  border: 2px solid var(--error);
+  color: var(--error);
+}
+
+.btn-outline-danger:hover {
+  background: var(--error);
+  color: var(--white);
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.85rem;
 }
 
 .alert {
@@ -505,8 +542,108 @@
 }
 
 .col-md-6,
-.col-lg-4 {
+.col-lg-4,
+.col-lg-8 {
   padding: var(--spacing-md);
+}
+
+.col-md-6 {
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+
+.col-lg-4 {
+  flex: 0 0 33.333333%;
+  max-width: 33.333333%;
+}
+
+.col-lg-8 {
+  flex: 0 0 66.666667%;
+  max-width: 66.666667%;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.d-grid {
+  display: grid;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.align-items-start {
+  align-items: flex-start;
+}
+
+.gap-2 {
+  gap: var(--spacing-sm);
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-white {
+  color: var(--white) !important;
+}
+
+.small {
+  font-size: 0.875rem;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.card-text {
+  margin: 0 0 var(--spacing-sm);
+}
+
+.shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.bg-primary {
+  background: var(--primary-gradient) !important;
+}
+
+.bg-success {
+  background: var(--success) !important;
+  color: var(--white) !important;
+}
+
+.bg-danger {
+  background: var(--error) !important;
+  color: var(--white) !important;
+}
+
+.bg-light {
+  background: var(--gray-100) !important;
+  color: var(--gray-900) !important;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* Status badges */
@@ -592,9 +729,11 @@
   }
 
   .col-md-6,
-  .col-lg-4 {
+  .col-lg-4,
+  .col-lg-8 {
     padding: var(--spacing-sm);
-    flex: 0 0 50%;
+    flex: 0 0 100%;
+    max-width: 100%;
   }
 
   .card {
@@ -617,8 +756,10 @@
 
 @media (max-width: 576px) {
   .col-md-6,
-  .col-lg-4 {
+  .col-lg-4,
+  .col-lg-8 {
     flex: 0 0 100%;
+    max-width: 100%;
   }
 
   .form-label {
@@ -726,6 +867,10 @@
 
 .mt-4 {
   margin-top: var(--spacing-xl);
+}
+
+.mt-3 {
+  margin-top: var(--spacing-md);
 }
 
 .mb-4 {

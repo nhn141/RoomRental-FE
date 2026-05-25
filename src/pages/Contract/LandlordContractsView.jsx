@@ -47,22 +47,13 @@ const LandlordContractsView = () => {
 
   return (
     <div className="contracts-container">
-      <div className="page-header">
-        <button 
-          onClick={() => navigate(user?.role === 'admin' ? '/admin' : user?.role === 'landlord' ? '/landlord' : '/tenant')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Hợp Đồng Của Tôi</h2>
         <button
           className="btn btn-secondary"
-          onClick={() => navigate('/rental-posts/my')}
+          onClick={() => navigate('/my-rental-posts')}
         >
-          Quay Lại Bài Đăng
+          Quay lại bài đăng
         </button>
       </div>
 
@@ -76,7 +67,7 @@ const LandlordContractsView = () => {
             className={`btn ${statusFilter === 'all' ? 'btn-primary' : 'btn-outline-primary'}`}
             onClick={() => setStatusFilter('all')}
           >
-            Tất Cả ({landlordContracts.length})
+            Tất cả ({landlordContracts.length})
           </button>
           <button
             type="button"
@@ -144,7 +135,7 @@ const LandlordContractsView = () => {
                       className="btn btn-sm btn-info"
                       onClick={() => handleViewDetail(contract.id)}
                     >
-                      Chi Tiết
+                      Chi tiết
                     </button>
                     {contract.status === 'active' && (
                       <button

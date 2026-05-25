@@ -41,16 +41,6 @@ const AllUsersView = () => {
 
   return (
     <div className="rental-container">
-      <div className="page-header">
-        <button 
-          onClick={() => navigate('/admin')}
-          className="home-btn"
-          title="Về Dashboard"
-        >
-          🏠
-        </button>
-      </div>
-
       <div className="posts-header">
         <h1>👥 Danh Sách Tất Cả Người Dùng</h1>
         <div className="posts-header-nav">
@@ -65,7 +55,7 @@ const AllUsersView = () => {
           className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
           onClick={() => setFilter('all')}
         >
-          Tất Cả ({users.length})
+          Tất cả ({users.length})
         </button>
         <button
           className={`filter-btn ${filter === 'admin' ? 'active' : ''}`}
@@ -102,7 +92,7 @@ const AllUsersView = () => {
             overflow: 'hidden'
           }}>
             <thead>
-              <tr style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+              <tr style={{ background: 'var(--primary-gradient)', color: 'white' }}>
                 <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', borderBottom: '2px solid #e0e0e0' }}>ID</th>
                 <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', borderBottom: '2px solid #e0e0e0' }}>Tên</th>
                 <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', borderBottom: '2px solid #e0e0e0' }}>Email</th>

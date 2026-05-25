@@ -12,7 +12,7 @@ const Unauthorized = () => {
         <h2>Không Có Quyền Truy Cập</h2>
         <p>Xin lỗi, bạn không có quyền truy cập trang này.</p>
         <button onClick={() => navigate('/login')} className="error-btn">
-          Quay Lại Đăng Nhập
+          Quay lại đăng nhập
         </button>
       </div>
     </div>

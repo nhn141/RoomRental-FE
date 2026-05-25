@@ -214,7 +214,7 @@ const RegisterLandlord = () => {
           </div>
 
           <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? 'Đang đăng ký...' : 'Đăng Ký'}
+            {loading ? 'Đang đăng ký...' : 'Đăng ký'}
           </button>
         </form>
 

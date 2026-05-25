@@ -10,7 +10,15 @@ const profileService = {
     const response = await api.put('/profile/edit-profile', data);
     // BE returns { message, profile }
     return response.data.profile ?? response.data;
-  }
+  },
+  uploadAvatar: async (file) => {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    const response = await api.post('/profile/avatar', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data; // { message, avatar_url }
+  },
 };
 
-export default profileService;
+export default profileService;
