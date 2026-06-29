@@ -12,15 +12,13 @@ const getSocketUrl = () => {
 let socket = null;
 
 const socketService = {
-  connect: (token) => {
-    if (!token) return null;
-
+  connect: () => {
     if (socket?.connected) {
       return socket;
     }
 
     socket = io(getSocketUrl(), {
-      auth: { token },
+      withCredentials: true,
       transports: ['websocket', 'polling'],
     });
 

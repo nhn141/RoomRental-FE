@@ -7,13 +7,13 @@ import socketService from '../services/socketService';
 export const RealtimeContext = createContext(null);
 
 export const RealtimeProvider = ({ children }) => {
-  const { token, user } = useAuth();
+  const { user } = useAuth();
   const [socket, setSocket] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
   const refreshNotifications = useCallback(async () => {
-    if (!token) {
+    if (!user) {
       setNotifications([]);
       setUnreadCount(0);
       return;
@@ -22,10 +22,10 @@ export const RealtimeProvider = ({ children }) => {
     const data = await notificationService.getNotifications({ limit: 20 });
     setNotifications(data.notifications || []);
     setUnreadCount(data.unreadCount || 0);
-  }, [token]);
+  }, [user]);
 
   useEffect(() => {
-    if (!token || !user) {
+    if (!user) {
       socketService.disconnect();
       setSocket(null);
       setNotifications([]);
@@ -33,7 +33,7 @@ export const RealtimeProvider = ({ children }) => {
       return undefined;
     }
 
-    const nextSocket = socketService.connect(token);
+    const nextSocket = socketService.connect();
     setSocket(nextSocket);
     refreshNotifications().catch((error) => console.error('Refresh notifications error', error));
 
@@ -55,7 +55,7 @@ export const RealtimeProvider = ({ children }) => {
       nextSocket?.off('notification:new', handleNewNotification);
       nextSocket?.off('notification:unreadCount', handleUnreadCount);
     };
-  }, [refreshNotifications, token, user]);
+  }, [refreshNotifications, user]);
 
   const markNotificationAsRead = useCallback(async (notification) => {
     if (!notification || notification.is_read) return notification;

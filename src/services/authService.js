@@ -1,55 +1,49 @@
 import api from './api';
 
+const clearLegacyAuthStorage = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+};
+
 const authService = {
-  // Tenant Registration
   registerTenant: async (userData) => {
     const response = await api.post('/auth/tenant/register', userData);
-    if (response.data?.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-    }
+    clearLegacyAuthStorage();
     return response.data;
   },
 
-  // Landlord Registration
   registerLandlord: async (userData) => {
     const response = await api.post('/auth/landlord/register', userData);
-    if (response.data?.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-    }
+    clearLegacyAuthStorage();
     return response.data;
   },
 
-  // Login for any role: role = 'tenant' | 'landlord' | 'admin'
   login: async (email, password, role) => {
     const response = await api.post(`/auth/${role}/login`, { email, password });
-    if (response.data?.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-    }
+    clearLegacyAuthStorage();
     return response.data;
   },
 
-  logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  refreshSession: async () => {
+    const response = await api.post('/auth/refresh');
+    clearLegacyAuthStorage();
+    return response.data;
   },
 
-  getCurrentUser: () => {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+  logout: async () => {
+    try {
+      await api.post('/auth/logout');
+    } finally {
+      clearLegacyAuthStorage();
+    }
   },
 
-  getToken: () => {
-    return localStorage.getItem('token');
-  },
+  getCurrentUser: () => null,
 
-  isAuthenticated: () => {
-    return !!localStorage.getItem('token');
-  },
+  getToken: () => null,
 
-  // Password Reset helpers
+  isAuthenticated: () => false,
+
   forgotPassword: async (email) => {
     const response = await api.post('/auth/forgot-password', { email });
     return response.data;
